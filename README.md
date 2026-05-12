@@ -252,7 +252,7 @@ We gladly accept contributions via GitHub pull requests. Please see
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:pulldown-cmark-kotlin:0.1.0")
+    implementation("io.github.kotlinmania:pulldown-cmark-kotlin:0.1.0-SNAPSHOT")
 }
 ```
 
