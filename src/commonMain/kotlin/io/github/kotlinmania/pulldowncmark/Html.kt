@@ -9,7 +9,7 @@ private enum class TableState {
 /**
  * HTML renderer converting a stream of markdown events into HTML.
  */
-class HtmlWriter(
+internal class HtmlWriter(
     private val iter: Iterator<Event>,
     private val out: StringBuilder,
 ) {
