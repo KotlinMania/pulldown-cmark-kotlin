@@ -264,7 +264,7 @@ internal class FirstPass(
         var finalCellIx: TreeIndex? = null
         var ix = ixParam
 
-        val oldCur = tree.cur()
+        val oldCur = tree.cur
         val rowIx = tree.append(
             Item(
                 start = ix,
@@ -453,7 +453,7 @@ internal class FirstPass(
         val (n, level) = setext
         var attrs: HeadingAttributes? = null
 
-        val curIx = tree.cur()
+        val curIx = tree.cur
         if (curIx != null) {
             val parentIx = tree.peekUp()!!
             val headerStart = tree[parentIx].item.start
@@ -473,7 +473,7 @@ internal class FirstPass(
                 tree.truncateSiblings(newEnd)
             }
 
-            val updatedCur = tree.cur()
+            val updatedCur = tree.cur
             if (updatedCur != null) {
                 tree[updatedCur].item.end = newEnd
             }
@@ -948,7 +948,7 @@ internal class FirstPass(
             appendCodeText(remainingSpace, lineStartIx, ix)
 
             if (!lastLineBlank) {
-                lastNonblankChild = tree.cur()
+                lastNonblankChild = tree.cur
                 lastNonblankIx = ix
                 endIx = ix
             }
@@ -1219,7 +1219,7 @@ internal class FirstPass(
         tree[headerNodeIdx].item.end = end
 
         var emptyTextNode = false
-        val curIx = tree.cur()
+        val curIx = tree.cur
         if (curIx != null) {
             var limit = 0
             for (idx in (contentEnd - 1) downTo headerStart) {

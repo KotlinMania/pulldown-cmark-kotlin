@@ -5,11 +5,13 @@ package io.github.kotlinmania.pulldowncmark
 /**
  * Merge consecutive `Event.Text` events into one.
  */
-class TextMergeStream(private val iterator: Iterator<Event>) : Iterator<Event>, Iterable<Event> {
+class TextMergeStream(iterator: Iterator<*>) : Iterator<Event>, Iterable<Event> {
+    @Suppress("UNCHECKED_CAST")
+    private val iterator: Iterator<Event> = iterator as Iterator<Event>
     private var lastEvent: Event? = null
 
     override fun hasNext(): Boolean {
-        return lastEvent != null || iterator.hasNext()
+        return lastEvent != null || this.iterator.hasNext()
     }
 
     override fun next(): Event {
@@ -46,7 +48,7 @@ class TextMergeStream(private val iterator: Iterator<Event>) : Iterator<Event>, 
     override fun iterator(): Iterator<Event> = this
 
     companion object {
-        fun new(iterator: Iterator<Event>): TextMergeStream = TextMergeStream(iterator)
+        fun new(iterator: Iterator<*>): TextMergeStream = TextMergeStream(iterator)
     }
 }
 

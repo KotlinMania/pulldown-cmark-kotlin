@@ -266,7 +266,7 @@ class Parser(
 
     private fun handleInlinePass1() {
         val codeDelims = CodeDelims()
-        var cur = tree.cur()
+        var cur = tree.cur
         var prev: TreeIndex? = null
 
         val peekUp = tree.peekUp()
@@ -556,7 +556,7 @@ class Parser(
     private fun handleEmphasisAndHardBreak() {
         var prev: TreeIndex? = null
         var prevIx: TreeIndex
-        var cur = tree.cur()
+        var cur = tree.cur
 
         var singleQuoteOpen: TreeIndex? = null
         var doubleQuoteOpen = false
@@ -899,11 +899,11 @@ class Parser(
     fun intoOffsetIter(): OffsetIter = OffsetIter(this)
 
     override fun hasNext(): Boolean {
-        return tree.cur() != null || tree.peekUp() != null
+        return tree.cur != null || tree.peekUp() != null
     }
 
     override fun next(): Event {
-        val curIx = tree.cur()
+        val curIx = tree.cur
         return if (curIx == null) {
             val ix = tree.pop() ?: throw NoSuchElementException()
             val tagEnd = bodyToTagEnd(tree[ix].item.body)
@@ -927,7 +927,7 @@ class Parser(
     }
 
     internal fun nextWithSpan(): SpannedEvent? {
-        val curIx = tree.cur()
+        val curIx = tree.cur
         return if (curIx == null) {
             val ix = tree.pop() ?: return null
             val tagEnd = bodyToTagEnd(tree[ix].item.body)
@@ -1109,7 +1109,7 @@ internal fun scanContainers(
 
 internal fun Tree<Item>.appendText(start: Int, end: Int, backslashEscaped: Boolean) {
     if (end > start) {
-        val curIx = cur()
+        val curIx = cur
         if (curIx != null) {
             val item = this[curIx].item
             if (item.body is ItemBody.Text && item.end == start) {

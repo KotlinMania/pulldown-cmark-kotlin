@@ -41,8 +41,6 @@ class Tree<T>(
         nodes.add(Node(item = defaultItem()))
     }
 
-    fun cur(): TreeIndex? = cur
-
     fun append(item: T): TreeIndex {
         val ix = createNode(item)
         val thisIx = ix
