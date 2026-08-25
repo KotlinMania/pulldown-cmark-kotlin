@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 12/40 (30.0%)
-- **Function parity:** 180/1357 matched (target 275) — 13.3%
-- **Class/type parity:** 46/63 matched (target 135) — 73.0%
-- **Combined symbol parity:** 226/1420 matched (target 410) — 15.9%
-- **Average inline-code cosine:** 0.34 (function body across 11 matched files)
-- **Average documentation cosine:** 0.40 (doc text across 11 matched files)
+- **Files Present:** 11/12 (91.7%)
+- **Function parity:** 179/288 matched (target 274) — 62.2%
+- **Class/type parity:** 46/60 matched (target 135) — 76.7%
+- **Combined symbol parity:** 225/348 matched (target 409) — 64.7%
+- **Average inline-code cosine:** 0.37 (function body across 10 matched files)
+- **Average documentation cosine:** 0.44 (doc text across 10 matched files)
 - **Cheat-zeroed Files:** 2
-- **Critical Issues:** 10 files with <0.60 function similarity
+- **Critical Issues:** 9 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -57,22 +57,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source strings.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/strings.rs`)
 - **Lint issues:** 1
 
-### 3. tests.html
-
-- **Target:** `pulldowncmark.Escape [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 202010.0
-- **Functions:** 0/20 matched (target 3)
-- **Missing functions:** `html_test_1`, `html_test_2`, `html_test_3`, `html_test_4`, `html_test_5`, `html_test_6`, `html_test_7`, `html_test_8`, `html_test_9`, `html_test_10`, `html_test_11`, `html_test_broken_callback`, `newline_in_code`, `newline_start_end_of_code`, `trim_space_and_tab_at_end_of_paragraph`, `newline_within_code`, `trim_space_tab_nl_at_end_of_paragraph`, `trim_space_nl_at_end_of_paragraph`, `trim_space_before_soft_break`, `issue_819`
-- **Types:** 0/0 matched
-- **Missing types:** _none_
-- **Tests:** 0/20 matched
-- **Provenance warning:** port-lint provenance header matched only by basename: `tmp/pulldown-cmark/src/html.rs` vs expected `tests/html.rs`
-- **Proposed provenance header:** `// port-lint: source tests/html.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/html.rs`)
-- **Lint issues:** 1
-
-### 4. firstpass
+### 3. firstpass
 
 - **Target:** `pulldowncmark.FirstPass [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.60
@@ -87,7 +72,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source firstpass.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/firstpass.rs`)
 - **Lint issues:** 1
 
-### 5. scanners
+### 4. scanners
 
 - **Target:** `pulldowncmark.Scanners [ZERO] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
@@ -102,21 +87,21 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source scanners.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/scanners.rs`)
 - **Lint issues:** 1
 
-### 6. tree
+### 5. tree
 
 - **Target:** `pulldowncmark.Tree [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.49
+- **Similarity:** 0.45
 - **Dependents:** 0
-- **Priority Score:** 92705.1
-- **Functions:** 15/23 matched (target 19)
-- **Missing functions:** `new`, `add`, `sub`, `with_capacity`, `fmt`, `debug_tree`, `index`, `index_mut`
+- **Priority Score:** 102705.5
+- **Functions:** 14/23 matched (target 18)
+- **Missing functions:** `new`, `add`, `sub`, `with_capacity`, `cur`, `fmt`, `debug_tree`, `index`, `index_mut`
 - **Types:** 3/4 matched (target 3)
 - **Missing types:** `Output`
 - **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/tree.rs` vs expected `tree.rs`
 - **Proposed provenance header:** `// port-lint: source tree.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/tree.rs`)
 - **Lint issues:** 1
 
-### 7. lib
+### 6. lib
 
 - **Target:** `pulldowncmark.Lib [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
@@ -130,23 +115,25 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/lib.rs`)
 - **Lint issues:** 1
 
-### 8. html
+### 7. html
 
 - **Target:** `pulldowncmark.Html [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.54
 - **Dependents:** 0
 - **Priority Score:** 21104.6
-- **Functions:** 7/9 matched (target 34)
+- **Functions:** 7/9 matched (target 37)
 - **Missing functions:** `new`, `write_html`
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 - **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/html.rs` vs expected `html.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/html.rs` vs expected `html.rs`
 - **Provenance warning:** port-lint provenance header matched only by basename: `tmp/pulldown-cmark/tests/html.rs` vs expected `html.rs`
 - **Proposed provenance header:** `// port-lint: source html.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/html.rs`)
+- **Proposed provenance header:** `// port-lint: source html.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/html.rs`)
 - **Proposed provenance header:** `// port-lint: source html.rs` (current: `// port-lint: source tmp/pulldown-cmark/tests/html.rs`)
-- **Lint issues:** 2
+- **Lint issues:** 3
 
-### 9. linklabel
+### 8. linklabel
 
 - **Target:** `pulldowncmark.LinkLabel [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.29
@@ -161,7 +148,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source linklabel.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/linklabel.rs`)
 - **Lint issues:** 1
 
-### 10. puncttable
+### 9. puncttable
 
 - **Target:** `pulldowncmark.PunctTable [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.32
@@ -176,7 +163,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source puncttable.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/puncttable.rs`)
 - **Lint issues:** 1
 
-### 11. utils
+### 10. utils
 
 - **Target:** `pulldowncmark.Utils [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.62
@@ -190,7 +177,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source utils.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/utils.rs`)
 - **Lint issues:** 1
 
-### 12. entities
+### 11. entities
 
 - **Target:** `pulldowncmark.Entities [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.40
@@ -212,19 +199,4 @@ For each file to be considered "complete":
 - All tests ported
 - Documentation ported
 - port-lint header present
-
-## Reexport / Wiring Modules
-
-These files match `reexport_modules` patterns in `.ast_distance_config.json`. They are filtered out of
-normal priority and missing-file ladders because they are wiring
-modules, not direct logic ports. Consult them for call-site routing;
-do not treat them as the next implementation target by default.
-
-### Missing
-
-| Source | Expected target | Deps | Source path | Expected path |
-|--------|-----------------|------|-------------|---------------|
-| `benches.lib` | `benches.Lib` | 0 | `benches/lib.rs` | `benches/Lib.kt` |
-| `tests.lib` | `tests.Lib` | 0 | `tests/lib.rs` | `tests/Lib.kt` |
-| `suite.mod` | `tests.suite.Mod` | 0 | `tests/suite/mod.rs` | `tests/suite/Mod.kt` |
 
