@@ -1,7 +1,5 @@
 package io.github.kotlinmania.pulldowncmark
 
-// port-lint: source tmp/pulldown-cmark/src/html.rs
-
 fun escapeHtml(out: StringBuilder, text: String) {
     for (c in text) {
         when (c) {

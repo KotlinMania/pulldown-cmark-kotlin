@@ -1,4 +1,4 @@
-// port-lint: source tmp/pulldown-cmark/src/linklabel.rs
+// port-lint: source linklabel.rs
 package io.github.kotlinmania.pulldowncmark
 
 public sealed class ReferenceLabel {
