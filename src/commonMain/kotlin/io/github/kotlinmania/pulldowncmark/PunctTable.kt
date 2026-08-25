@@ -1,6 +1,5 @@
+// port-lint: source puncttable.rs
 package io.github.kotlinmania.pulldowncmark
-
-// port-lint: source tmp/pulldown-cmark/src/puncttable.rs
 
 /**
  * CommonMark punctuation set based on spec and Unicode properties.

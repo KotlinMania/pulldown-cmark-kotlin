@@ -5,12 +5,12 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 11/12 (91.7%)
-- **Function parity:** 179/288 matched (target 274) — 62.2%
+- **Function parity:** 179/288 matched (target 271) — 62.2%
 - **Class/type parity:** 46/60 matched (target 135) — 76.7%
-- **Combined symbol parity:** 225/348 matched (target 409) — 64.7%
-- **Average inline-code cosine:** 0.37 (function body across 10 matched files)
-- **Average documentation cosine:** 0.44 (doc text across 10 matched files)
-- **Cheat-zeroed Files:** 2
+- **Combined symbol parity:** 225/348 matched (target 406) — 64.7%
+- **Average inline-code cosine:** 0.38 (function body across 11 matched files)
+- **Average documentation cosine:** 0.40 (doc text across 11 matched files)
+- **Cheat-zeroed Files:** 1
 - **Critical Issues:** 9 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
@@ -29,7 +29,7 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 1. parse
 
-- **Target:** `pulldowncmark.Parse [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.Parse`
 - **Similarity:** 0.43
 - **Dependents:** 0
 - **Priority Score:** 451405.7
@@ -38,13 +38,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 21/26 matched (target 65)
 - **Missing types:** `BrokenLink`, `Output`, `HtmlScanGuard`, `BrokenLinkCallback`, `DefaultBrokenLinkCallback`
 - **Tests:** 0/35 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/parse.rs` vs expected `parse.rs`
-- **Proposed provenance header:** `// port-lint: source parse.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/parse.rs`)
-- **Lint issues:** 1
 
 ### 2. strings
 
-- **Target:** `pulldowncmark.Strings [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.Strings`
 - **Similarity:** 0.09
 - **Dependents:** 0
 - **Priority Score:** 273309.1
@@ -53,13 +50,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/7 matched (target 2)
 - **Missing types:** `StringTooLongError`, `Error`, `Target`, `CowStrVisitor`, `Value`
 - **Tests:** 0/12 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/strings.rs` vs expected `strings.rs`
-- **Proposed provenance header:** `// port-lint: source strings.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/strings.rs`)
-- **Lint issues:** 1
 
 ### 3. firstpass
 
-- **Target:** `pulldowncmark.FirstPass [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.FirstPass`
 - **Similarity:** 0.60
 - **Dependents:** 0
 - **Priority Score:** 155804.0
@@ -68,13 +62,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/4 matched (target 5)
 - **Missing types:** `LookupTable`
 - **Tests:** 0/7 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/firstpass.rs` vs expected `firstpass.rs`
-- **Proposed provenance header:** `// port-lint: source firstpass.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/firstpass.rs`)
-- **Lint issues:** 1
 
 ### 4. scanners
 
-- **Target:** `pulldowncmark.Scanners [ZERO] [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.Scanners [ZERO]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 126410.0
@@ -83,13 +74,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 3)
 - **Missing types:** _none_
 - **Tests:** 0/4 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/scanners.rs` vs expected `scanners.rs`
-- **Proposed provenance header:** `// port-lint: source scanners.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/scanners.rs`)
-- **Lint issues:** 1
 
 ### 5. tree
 
-- **Target:** `pulldowncmark.Tree [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.Tree`
 - **Similarity:** 0.45
 - **Dependents:** 0
 - **Priority Score:** 102705.5
@@ -97,45 +85,32 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `new`, `add`, `sub`, `with_capacity`, `cur`, `fmt`, `debug_tree`, `index`, `index_mut`
 - **Types:** 3/4 matched (target 3)
 - **Missing types:** `Output`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/tree.rs` vs expected `tree.rs`
-- **Proposed provenance header:** `// port-lint: source tree.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/tree.rs`)
-- **Lint issues:** 1
 
 ### 6. lib
 
-- **Target:** `pulldowncmark.Lib [STUB] [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
+- **Target:** `pulldowncmark.Lib`
+- **Similarity:** 0.48
 - **Dependents:** 0
-- **Priority Score:** 31810.0
+- **Priority Score:** 31805.2
 - **Functions:** 6/8 matched (target 15)
 - **Missing functions:** `fmt`, `try_from`
 - **Types:** 9/10 matched (target 44)
 - **Missing types:** `Error`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/lib.rs` vs expected `lib.rs`
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/lib.rs`)
-- **Lint issues:** 1
 
 ### 7. html
 
-- **Target:** `pulldowncmark.Html [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.Html`
 - **Similarity:** 0.54
 - **Dependents:** 0
 - **Priority Score:** 21104.6
-- **Functions:** 7/9 matched (target 37)
+- **Functions:** 7/9 matched (target 34)
 - **Missing functions:** `new`, `write_html`
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/html.rs` vs expected `html.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/html.rs` vs expected `html.rs`
-- **Provenance warning:** port-lint provenance header matched only by basename: `tmp/pulldown-cmark/tests/html.rs` vs expected `html.rs`
-- **Proposed provenance header:** `// port-lint: source html.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/html.rs`)
-- **Proposed provenance header:** `// port-lint: source html.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/html.rs`)
-- **Proposed provenance header:** `// port-lint: source html.rs` (current: `// port-lint: source tmp/pulldown-cmark/tests/html.rs`)
-- **Lint issues:** 3
 
 ### 8. linklabel
 
-- **Target:** `pulldowncmark.LinkLabel [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.LinkLabel`
 - **Similarity:** 0.29
 - **Dependents:** 0
 - **Priority Score:** 20607.1
@@ -144,13 +119,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/3 matched (target 6)
 - **Missing types:** _none_
 - **Tests:** 0/2 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/linklabel.rs` vs expected `linklabel.rs`
-- **Proposed provenance header:** `// port-lint: source linklabel.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/linklabel.rs`)
-- **Lint issues:** 1
 
 ### 9. puncttable
 
-- **Target:** `pulldowncmark.PunctTable [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.PunctTable`
 - **Similarity:** 0.32
 - **Dependents:** 0
 - **Priority Score:** 20406.8
@@ -159,13 +131,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
 - **Tests:** 0/2 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/puncttable.rs` vs expected `puncttable.rs`
-- **Proposed provenance header:** `// port-lint: source puncttable.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/puncttable.rs`)
-- **Lint issues:** 1
 
 ### 10. utils
 
-- **Target:** `pulldowncmark.Utils [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.Utils`
 - **Similarity:** 0.62
 - **Dependents:** 0
 - **Priority Score:** 10703.8
@@ -173,13 +142,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 2/3 matched (target 2)
 - **Missing types:** `Item`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/utils.rs` vs expected `utils.rs`
-- **Proposed provenance header:** `// port-lint: source utils.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/utils.rs`)
-- **Lint issues:** 1
 
 ### 11. entities
 
-- **Target:** `pulldowncmark.Entities [PROVENANCE-FALLBACK]`
+- **Target:** `pulldowncmark.Entities`
 - **Similarity:** 0.40
 - **Dependents:** 0
 - **Priority Score:** 106.0
@@ -187,9 +153,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tmp/pulldown-cmark/src/entities.rs` vs expected `entities.rs`
-- **Proposed provenance header:** `// port-lint: source entities.rs` (current: `// port-lint: source tmp/pulldown-cmark/src/entities.rs`)
-- **Lint issues:** 1
 
 ## Success Criteria
 

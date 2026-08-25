@@ -1,4 +1,4 @@
-// port-lint: source tmp/pulldown-cmark/src/html.rs
+// port-lint: source html.rs
 package io.github.kotlinmania.pulldowncmark
 
 private enum class TableState {

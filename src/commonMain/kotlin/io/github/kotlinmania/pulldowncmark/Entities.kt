@@ -1,6 +1,5 @@
+// port-lint: source entities.rs
 package io.github.kotlinmania.pulldowncmark
-
-// port-lint: source tmp/pulldown-cmark/src/entities.rs
 
 /**
  * Expansions of HTML5 entities

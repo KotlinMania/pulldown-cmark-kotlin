@@ -1,6 +1,5 @@
+// port-lint: source utils.rs
 package io.github.kotlinmania.pulldowncmark
-
-// port-lint: source tmp/pulldown-cmark/src/utils.rs
 
 /**
  * Merge consecutive `Event.Text` events into one.

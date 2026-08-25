@@ -1,7 +1,5 @@
+// port-lint: tests html.rs
 package io.github.kotlinmania.pulldowncmark
-
-// port-lint: source tmp/pulldown-cmark/tests/html.rs
-// port-lint: source tmp/pulldown-cmark/tests/errors.rs
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
