@@ -274,7 +274,7 @@ class Parser(
         val blockText = text.substring(0, min(blockEnd, text.length))
 
         while (cur != null) {
-            var curIx = cur
+            var curIx: TreeIndex = cur
             val item = tree[curIx].item
             when (val body = item.body) {
                 is ItemBody.MaybeHtml -> {
@@ -562,7 +562,7 @@ class Parser(
         var doubleQuoteOpen = false
 
         while (true) {
-            var curIx = cur ?: break
+            var curIx: TreeIndex = cur ?: break
             val body = tree[curIx].item.body
             when (body) {
                 is ItemBody.MaybeEmphasis -> {
