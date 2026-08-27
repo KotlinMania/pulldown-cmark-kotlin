@@ -1,4 +1,4 @@
-// port-lint: source pulldown-cmark/src/strings.rs
+// port-lint: source strings.rs
 package io.github.kotlinmania.pulldowncmark
 
 import kotlin.jvm.JvmInline
