@@ -2,11 +2,18 @@
 package io.github.kotlinmania.pulldowncmark
 
 public sealed class ReferenceLabel {
-    public data class Link(public val label: CowStr) : ReferenceLabel()
-    public data class Footnote(public val label: CowStr) : ReferenceLabel()
+    public data class Link(
+        public val label: CowStr,
+    ) : ReferenceLabel()
+
+    public data class Footnote(
+        public val label: CowStr,
+    ) : ReferenceLabel()
 }
 
-public data class UniCase(public val value: CowStr) {
+public data class UniCase(
+    public val value: CowStr,
+) {
     private val normalized: String = value.asString().lowercase()
 
     override fun equals(other: Any?): Boolean {
@@ -106,13 +113,14 @@ public fun scanLinkLabelRest(
         return null
     }
 
-    val cow: CowStr = if (mark == 0) {
-        val trimmed = text.substring(0, ix).trim { isAsciiWhitespace(it) }
-        CowStr.from(trimmed)
-    } else {
-        label.append(text.substring(mark, ix))
-        val trimmed = label.toString().trim { isAsciiWhitespace(it) }
-        CowStr.from(trimmed)
-    }
+    val cow: CowStr =
+        if (mark == 0) {
+            val trimmed = text.substring(0, ix).trim { isAsciiWhitespace(it) }
+            CowStr.from(trimmed)
+        } else {
+            label.append(text.substring(mark, ix))
+            val trimmed = label.toString().trim { isAsciiWhitespace(it) }
+            CowStr.from(trimmed)
+        }
     return Pair(ix + 1, cow)
 }

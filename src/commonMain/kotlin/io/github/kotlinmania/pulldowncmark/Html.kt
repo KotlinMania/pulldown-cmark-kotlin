@@ -165,7 +165,11 @@ internal class HtmlWriter(
                 }
                 when (val kind = tag.kind) {
                     is CodeBlockKind.Fenced -> {
-                        val lang = kind.info.value.split(' ').firstOrNull().orEmpty()
+                        val lang =
+                            kind.info.value
+                                .split(' ')
+                                .firstOrNull()
+                                .orEmpty()
                         if (lang.isEmpty()) {
                             write("<pre><code>")
                         } else {

@@ -3,15 +3,14 @@ package io.github.kotlinmania.pulldowncmark
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class PulldownCmarkTest {
-
     @Test
     fun testHtml1() {
-        val original = """
+        val original =
+            """
             Little header
 
             <script type="text/js">
@@ -24,9 +23,10 @@ class PulldownCmarkTest {
             console.log("fooooo");
             }
             </script>
-        """.trimIndent()
+            """.trimIndent()
 
-        val expected = """
+        val expected =
+            """
             <p>Little header</p>
             <script type="text/js">
             function some_func() {
@@ -38,7 +38,7 @@ class PulldownCmarkTest {
             console.log("fooooo");
             }
             </script>
-        """.trimIndent()
+            """.trimIndent()
 
         val output = renderHtml(original)
         assertEquals(expected, output.trim())
@@ -46,7 +46,8 @@ class PulldownCmarkTest {
 
     @Test
     fun testHtml2() {
-        val original = """
+        val original =
+            """
             Little header
 
             <script
@@ -60,9 +61,10 @@ class PulldownCmarkTest {
             console.log("fooooo");
             }
             </script>
-        """.trimIndent()
+            """.trimIndent()
 
-        val expected = """
+        val expected =
+            """
             <p>Little header</p>
             <script
             type="text/js">
@@ -75,7 +77,7 @@ class PulldownCmarkTest {
             console.log("fooooo");
             }
             </script>
-        """.trimIndent()
+            """.trimIndent()
 
         val output = renderHtml(original)
         assertEquals(expected, output.trim())
@@ -83,22 +85,24 @@ class PulldownCmarkTest {
 
     @Test
     fun testHtml3() {
-        val original = """
+        val original =
+            """
             Little header
 
             <?
             <div></div>
             <p>Useless</p>
             ?>
-        """.trimIndent()
+            """.trimIndent()
 
-        val expected = """
+        val expected =
+            """
             <p>Little header</p>
             <?
             <div></div>
             <p>Useless</p>
             ?>
-        """.trimIndent()
+            """.trimIndent()
 
         val output = renderHtml(original)
         assertEquals(expected, output.trim())
@@ -106,22 +110,24 @@ class PulldownCmarkTest {
 
     @Test
     fun testHtml4() {
-        val original = """
+        val original =
+            """
             Little header
 
             <!--
             <div></div>
             <p>Useless</p>
             -->
-        """.trimIndent()
+            """.trimIndent()
 
-        val expected = """
+        val expected =
+            """
             <p>Little header</p>
             <!--
             <div></div>
             <p>Useless</p>
             -->
-        """.trimIndent()
+            """.trimIndent()
 
         val output = renderHtml(original)
         assertEquals(expected, output.trim())
@@ -129,22 +135,24 @@ class PulldownCmarkTest {
 
     @Test
     fun testHtml5() {
-        val original = """
+        val original =
+            """
             Little header
 
             <![CDATA[
             <div></div>
             <p>Useless</p>
             ]]>
-        """.trimIndent()
+            """.trimIndent()
 
-        val expected = """
+        val expected =
+            """
             <p>Little header</p>
             <![CDATA[
             <div></div>
             <p>Useless</p>
             ]]>
-        """.trimIndent()
+            """.trimIndent()
 
         val output = renderHtml(original)
         assertEquals(expected, output.trim())
@@ -152,20 +160,22 @@ class PulldownCmarkTest {
 
     @Test
     fun testHtml6() {
-        val original = """
+        val original =
+            """
             Little header
 
             <!X
             Some things are here...
             >
-        """.trimIndent()
+            """.trimIndent()
 
-        val expected = """
+        val expected =
+            """
             <p>Little header</p>
             <!X
             Some things are here...
             >
-        """.trimIndent()
+            """.trimIndent()
 
         val output = renderHtml(original)
         assertEquals(expected, output.trim())
@@ -173,7 +183,8 @@ class PulldownCmarkTest {
 
     @Test
     fun testHtml7() {
-        val original = """
+        val original =
+            """
             Little header
             -----------
 
@@ -187,9 +198,10 @@ class PulldownCmarkTest {
             console.log("fooooo");
             }
             </script>
-        """.trimIndent()
+            """.trimIndent()
 
-        val expected = """
+        val expected =
+            """
             <h2>Little header</h2>
             <script>
             function some_func() {
@@ -201,7 +213,7 @@ class PulldownCmarkTest {
             console.log("fooooo");
             }
             </script>
-        """.trimIndent()
+            """.trimIndent()
 
         val output = renderHtml(original)
         assertEquals(expected, output.trim())
@@ -285,9 +297,16 @@ class PulldownCmarkTest {
 
     @Test
     fun testIssue819() {
-        val originals = listOf(
-            "# \\", "# \\\n", "# \\\n\n", "# \\\r\n", "# \\\r\n\r\n", "# \\\n\r\n", "# \\\r\n\n"
-        )
+        val originals =
+            listOf(
+                "# \\",
+                "# \\\n",
+                "# \\\n\n",
+                "# \\\r\n",
+                "# \\\r\n\r\n",
+                "# \\\n\r\n",
+                "# \\\r\n\n",
+            )
         val expected = "<h1>\\</h1>"
 
         for (orig in originals) {
@@ -329,26 +348,28 @@ class PulldownCmarkTest {
 
     @Test
     fun testBrokenCallback() {
-        val original = """
+        val original =
+            """
             [foo],
             [bar],
             [baz],
 
                [baz]: https://example.org
-        """.trimIndent()
+            """.trimIndent()
 
-        val callback = BrokenLinkCallback { broken ->
-            if (broken.reference.value == "foo" || broken.reference.value == "baz") {
-                BrokenLink(
-                    linkType = broken.linkType,
-                    reference = broken.reference,
-                    destUrl = CowStr.from("https://replaced.example.org"),
-                    title = CowStr.from("some title"),
-                )
-            } else {
-                null
+        val callback =
+            BrokenLinkCallback { broken ->
+                if (broken.reference.value == "foo" || broken.reference.value == "baz") {
+                    BrokenLink(
+                        linkType = broken.linkType,
+                        reference = broken.reference,
+                        destUrl = CowStr.from("https://replaced.example.org"),
+                        title = CowStr.from("some title"),
+                    )
+                } else {
+                    null
+                }
             }
-        }
 
         val parser = Parser(original, Options.NONE, callback)
         val sb = StringBuilder()
@@ -371,22 +392,23 @@ class PulldownCmarkTest {
 
     @Test
     fun testFuzzerInputs() {
-        val cases = listOf(
-            ">\n >>><N\n",
-            " \u000B\\\r- ",
-            "\n # #\r\u001C ",
-            "\u0000{\t\u03D0}\n-",
-            " \u000C{}\n-\n",
-            "*\t[][\n\t<p]>\n\t[]",
-            "[][{]}\n-",
-            "a\n \u000C{}\n-",
-            "a\n \u000C{}\\\n-",
-            "[](\\ ",
-            "<a",
-            "[<!W\n\\\n",
-            "><a\n",
-            "><a a\n",
-        )
+        val cases =
+            listOf(
+                ">\n >>><N\n",
+                " \u000B\\\r- ",
+                "\n # #\r\u001C ",
+                "\u0000{\t\u03D0}\n-",
+                " \u000C{}\n-\n",
+                "*\t[][\n\t<p]>\n\t[]",
+                "[][{]}\n-",
+                "a\n \u000C{}\n-",
+                "a\n \u000C{}\\\n-",
+                "[](\\ ",
+                "<a",
+                "[<!W\n\\\n",
+                "><a\n",
+                "><a a\n",
+            )
 
         for (case in cases) {
             val parser = Parser(case, Options.ALL)
@@ -431,12 +453,13 @@ class PulldownCmarkTest {
 
     @Test
     fun testTextMergeStream() {
-        val events = listOf(
-            Event.Text("Hello "),
-            Event.Text("World!"),
-            Event.SoftBreak,
-            Event.Text("Again")
-        )
+        val events =
+            listOf(
+                Event.Text("Hello "),
+                Event.Text("World!"),
+                Event.SoftBreak,
+                Event.Text("Again"),
+            )
 
         val merged = TextMergeStream(events.iterator()).toList()
         assertEquals(3, merged.size)

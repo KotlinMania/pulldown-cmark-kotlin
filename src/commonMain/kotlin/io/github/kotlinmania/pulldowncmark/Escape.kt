@@ -38,4 +38,3 @@ fun escapeHref(out: StringBuilder, href: String) {
         }
     }
 }
-
