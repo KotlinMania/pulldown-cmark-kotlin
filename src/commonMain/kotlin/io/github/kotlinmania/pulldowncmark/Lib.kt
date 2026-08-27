@@ -1,4 +1,4 @@
-// port-lint: source lib.rs
+// port-lint: source pulldown-cmark/tests/lib.rs
 package io.github.kotlinmania.pulldowncmark
 
 public enum class HeadingLevel(public val level: Int) {

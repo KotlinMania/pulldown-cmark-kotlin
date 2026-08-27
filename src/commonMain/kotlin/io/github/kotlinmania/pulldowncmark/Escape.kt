@@ -1,3 +1,4 @@
+// port-lint: source pulldown-cmark/src/html.rs
 package io.github.kotlinmania.pulldowncmark
 
 fun escapeHtml(out: StringBuilder, text: String) {
