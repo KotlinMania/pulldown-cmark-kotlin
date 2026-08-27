@@ -7,23 +7,28 @@ import kotlin.jvm.JvmInline
  * An inline string abstraction for short strings.
  */
 @JvmInline
-value class InlineStr(val value: String) : CharSequence by value, Comparable<InlineStr> {
+value class InlineStr(
+    val value: String,
+) : CharSequence by value,
+    Comparable<InlineStr> {
     override fun compareTo(other: InlineStr): Int = value.compareTo(other.value)
+
     override fun toString(): String = value
 
     companion object {
         fun fromChar(c: Char): InlineStr = InlineStr(c.toString())
 
-        fun tryFrom(s: String): InlineStr? {
-            return if (s.length <= 22) InlineStr(s) else null
-        }
+        fun tryFrom(s: String): InlineStr? = if (s.length <= 22) InlineStr(s) else null
     }
 }
 
 /**
  * A copy-on-write string abstraction.
  */
-class CowStr(val value: String) : CharSequence by value, Comparable<CowStr> {
+class CowStr(
+    val value: String,
+) : CharSequence by value,
+    Comparable<CowStr> {
     override fun compareTo(other: CowStr): Int = value.compareTo(other.value)
 
     override fun equals(other: Any?): Boolean {
@@ -66,4 +71,5 @@ class CowStr(val value: String) : CharSequence by value, Comparable<CowStr> {
 }
 
 fun String.toCowStr(): CowStr = CowStr(this)
+
 fun Char.toCowStr(): CowStr = CowStr(this.toString())

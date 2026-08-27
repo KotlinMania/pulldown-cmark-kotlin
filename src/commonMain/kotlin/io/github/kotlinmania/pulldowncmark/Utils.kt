@@ -4,25 +4,27 @@ package io.github.kotlinmania.pulldowncmark
 /**
  * Merge consecutive `Event.Text` events into one.
  */
-class TextMergeStream(iterator: Iterator<*>) : Iterator<Event>, Iterable<Event> {
+class TextMergeStream(
+    iterator: Iterator<*>,
+) : Iterator<Event>,
+    Iterable<Event> {
     @Suppress("UNCHECKED_CAST")
     private val iterator: Iterator<Event> = iterator as Iterator<Event>
     private var lastEvent: Event? = null
 
-    override fun hasNext(): Boolean {
-        return lastEvent != null || this.iterator.hasNext()
-    }
+    override fun hasNext(): Boolean = lastEvent != null || this.iterator.hasNext()
 
     override fun next(): Event {
         val saved = lastEvent
-        val nextEv: Event = if (saved != null) {
-            lastEvent = null
-            saved
-        } else if (iterator.hasNext()) {
-            iterator.next()
-        } else {
-            throw NoSuchElementException()
-        }
+        val nextEv: Event =
+            if (saved != null) {
+                lastEvent = null
+                saved
+            } else if (iterator.hasNext()) {
+                iterator.next()
+            } else {
+                throw NoSuchElementException()
+            }
 
         if (nextEv is Event.Text) {
             val sb = StringBuilder(nextEv.text.value)
@@ -58,8 +60,8 @@ class TextMergeWithOffset(
     private val source: String,
     options: Options = Options.NONE,
     callback: BrokenLinkCallback? = null,
-) : Iterator<SpannedEvent>, Iterable<SpannedEvent> {
-
+) : Iterator<SpannedEvent>,
+    Iterable<SpannedEvent> {
     private val parser: OffsetIter = Parser.newWithBrokenLinkCallback(source, options, callback).intoOffsetIter()
     private var peeked: SpannedEvent? = null
 
@@ -123,4 +125,3 @@ class TextMergeWithOffset(
             TextMergeWithOffset(source, options, callback)
     }
 }
-

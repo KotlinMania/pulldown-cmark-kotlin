@@ -14,48 +14,135 @@ data class Item(
 
 sealed class ItemBody {
     data object Root : ItemBody()
-    data class Text(val backslashEscaped: Boolean) : ItemBody()
-    data class Code(val cowIndex: CowIndex) : ItemBody()
-    data class SynthesizeText(val cowIndex: CowIndex) : ItemBody()
-    data class SynthesizeChar(val char: Char) : ItemBody()
+
+    data class Text(
+        val backslashEscaped: Boolean,
+    ) : ItemBody()
+
+    data class Code(
+        val cowIndex: CowIndex,
+    ) : ItemBody()
+
+    data class SynthesizeText(
+        val cowIndex: CowIndex,
+    ) : ItemBody()
+
+    data class SynthesizeChar(
+        val char: Char,
+    ) : ItemBody()
+
     data object HtmlBlock : ItemBody()
+
     data object Html : ItemBody()
+
     data object InlineHtml : ItemBody()
-    data class OwnedHtml(val cowIndex: CowIndex) : ItemBody()
+
+    data class OwnedHtml(
+        val cowIndex: CowIndex,
+    ) : ItemBody()
+
     data object SoftBreak : ItemBody()
-    data class HardBreak(val isBackslash: Boolean) : ItemBody()
-    data class FootnoteReference(val cowIndex: CowIndex) : ItemBody()
-    data class TaskListMarker(val isChecked: Boolean) : ItemBody()
+
+    data class HardBreak(
+        val isBackslash: Boolean,
+    ) : ItemBody()
+
+    data class FootnoteReference(
+        val cowIndex: CowIndex,
+    ) : ItemBody()
+
+    data class TaskListMarker(
+        val isChecked: Boolean,
+    ) : ItemBody()
+
     data object Rule : ItemBody()
+
     data object Paragraph : ItemBody()
+
     data object Emphasis : ItemBody()
+
     data object Strong : ItemBody()
+
     data object Strikethrough : ItemBody()
-    data class Link(val linkIndex: LinkIndex) : ItemBody()
-    data class Image(val linkIndex: LinkIndex) : ItemBody()
-    data class Heading(val level: HeadingLevel, val headingIndex: HeadingIndex?) : ItemBody()
-    data class FencedCodeBlock(val cowIndex: CowIndex) : ItemBody()
+
+    data class Link(
+        val linkIndex: LinkIndex,
+    ) : ItemBody()
+
+    data class Image(
+        val linkIndex: LinkIndex,
+    ) : ItemBody()
+
+    data class Heading(
+        val level: HeadingLevel,
+        val headingIndex: HeadingIndex?,
+    ) : ItemBody()
+
+    data class FencedCodeBlock(
+        val cowIndex: CowIndex,
+    ) : ItemBody()
+
     data object IndentCodeBlock : ItemBody()
+
     data object BlockQuote : ItemBody()
-    data class List(val isTight: Boolean, val listChar: Char, val listStart: Long) : ItemBody()
-    data class ListItem(val indent: Int) : ItemBody()
+
+    data class List(
+        val isTight: Boolean,
+        val listChar: Char,
+        val listStart: Long,
+    ) : ItemBody()
+
+    data class ListItem(
+        val indent: Int,
+    ) : ItemBody()
+
     data object TableHead : ItemBody()
+
     data object TableCell : ItemBody()
+
     data object TableRow : ItemBody()
-    data class Table(val alignmentIndex: AlignmentIndex) : ItemBody()
-    data class FootnoteDefinition(val cowIndex: CowIndex) : ItemBody()
-    data class MetadataBlock(val kind: MetadataBlockKind) : ItemBody()
+
+    data class Table(
+        val alignmentIndex: AlignmentIndex,
+    ) : ItemBody()
+
+    data class FootnoteDefinition(
+        val cowIndex: CowIndex,
+    ) : ItemBody()
+
+    data class MetadataBlock(
+        val kind: MetadataBlockKind,
+    ) : ItemBody()
 
     data object MaybeHtml : ItemBody()
-    data class MaybeCode(val count: Int, val precededByBackslash: Boolean) : ItemBody()
-    data class MaybeEmphasis(val count: Int, val canOpen: Boolean, val canClose: Boolean) : ItemBody()
-    data class MaybeSmartQuote(val char: Char, val canOpen: Boolean, val canClose: Boolean) : ItemBody()
-    data object MaybeLinkOpen : ItemBody()
-    data object MaybeImage : ItemBody()
-    data class MaybeLinkClose(val couldBeRef: Boolean) : ItemBody()
 
-    fun isInline(): Boolean {
-        return this is MaybeHtml ||
+    data class MaybeCode(
+        val count: Int,
+        val precededByBackslash: Boolean,
+    ) : ItemBody()
+
+    data class MaybeEmphasis(
+        val count: Int,
+        val canOpen: Boolean,
+        val canClose: Boolean,
+    ) : ItemBody()
+
+    data class MaybeSmartQuote(
+        val char: Char,
+        val canOpen: Boolean,
+        val canClose: Boolean,
+    ) : ItemBody()
+
+    data object MaybeLinkOpen : ItemBody()
+
+    data object MaybeImage : ItemBody()
+
+    data class MaybeLinkClose(
+        val couldBeRef: Boolean,
+    ) : ItemBody()
+
+    fun isInline(): Boolean =
+        this is MaybeHtml ||
             this is MaybeCode ||
             this is MaybeEmphasis ||
             this is MaybeSmartQuote ||
@@ -63,10 +150,9 @@ sealed class ItemBody {
             this is MaybeImage ||
             this is MaybeLinkClose ||
             (this is HardBreak && this.isBackslash)
-    }
 
-    fun isBlock(): Boolean {
-        return this is Paragraph ||
+    fun isBlock(): Boolean =
+        this is Paragraph ||
             this is Heading ||
             this is FencedCodeBlock ||
             this is IndentCodeBlock ||
@@ -79,7 +165,6 @@ sealed class ItemBody {
             this is Table ||
             this is FootnoteDefinition ||
             this is MetadataBlock
-    }
 }
 
 typealias CowIndex = Int
@@ -167,27 +252,19 @@ data class FootnoteDef(
 )
 
 class RefDefs internal constructor(
-    internal val map: MutableMap<UniCase, LinkDef> = LinkedHashMap()
+    internal val map: MutableMap<UniCase, LinkDef> = LinkedHashMap(),
 ) {
-    fun get(key: String): LinkDef? {
-        return map[UniCase(CowStr.from(key))]
-    }
+    fun get(key: String): LinkDef? = map[UniCase(CowStr.from(key))]
 
-    fun iter(): kotlin.collections.List<Pair<String, LinkDef>> {
-        return map.entries.map { Pair(it.key.value.asString(), it.value) }
-    }
+    fun iter(): kotlin.collections.List<Pair<String, LinkDef>> = map.entries.map { Pair(it.key.value.asString(), it.value) }
 }
 
 class FootnoteDefs internal constructor(
-    internal val map: MutableMap<UniCase, FootnoteDef> = LinkedHashMap()
+    internal val map: MutableMap<UniCase, FootnoteDef> = LinkedHashMap(),
 ) {
-    fun contains(key: String): Boolean {
-        return map.containsKey(UniCase(CowStr.from(key)))
-    }
+    fun contains(key: String): Boolean = map.containsKey(UniCase(CowStr.from(key)))
 
-    fun getMut(key: CowStr): FootnoteDef? {
-        return map[UniCase(key)]
-    }
+    fun getMut(key: CowStr): FootnoteDef? = map[UniCase(key)]
 }
 
 class Parser(
@@ -195,7 +272,6 @@ class Parser(
     private val options: Options = Options.empty(),
     private val brokenLinkCallback: BrokenLinkCallback? = null,
 ) : Iterator<Event> {
-
     private val text: String = text
     private val tree: Tree<Item>
     private val allocs: Allocations
@@ -213,7 +289,9 @@ class Parser(
 
     companion object {
         fun new(text: String): Parser = Parser(text, Options.empty(), null)
+
         fun newExt(text: String, options: Options): Parser = Parser(text, options, null)
+
         fun newWithBrokenLinkCallback(
             text: String,
             options: Options,
@@ -233,23 +311,25 @@ class Parser(
         }
 
         val matchingDef = allocs.refdefs.get(linkLabel.asString())
-        val result: Triple<LinkType, CowStr, CowStr>? = if (matchingDef != null) {
-            val title = matchingDef.title ?: CowStr.from("")
-            val url = matchingDef.dest.clone()
-            Triple(linkType, url, title)
-        } else if (brokenLinkCallback != null) {
-            val brokenLink = BrokenLink(
-                span = span,
-                linkType = linkType,
-                reference = linkLabel,
-            )
-            val fallback = brokenLinkCallback.handleBrokenLink(brokenLink)
-            fallback?.let { fb ->
-                Triple(linkType.toUnknown(), fb.destUrl, fb.title)
+        val result: Triple<LinkType, CowStr, CowStr>? =
+            if (matchingDef != null) {
+                val title = matchingDef.title ?: CowStr.from("")
+                val url = matchingDef.dest.clone()
+                Triple(linkType, url, title)
+            } else if (brokenLinkCallback != null) {
+                val brokenLink =
+                    BrokenLink(
+                        span = span,
+                        linkType = linkType,
+                        reference = linkLabel,
+                    )
+                val fallback = brokenLinkCallback.handleBrokenLink(brokenLink)
+                fallback?.let { fb ->
+                    Triple(linkType.toUnknown(), fb.destUrl, fb.title)
+                }
+            } else {
+                null
             }
-        } else {
-            null
-        }
 
         if (result != null) {
             val (_, url, title) = result
@@ -279,22 +359,24 @@ class Parser(
             when (val body = item.body) {
                 is ItemBody.MaybeHtml -> {
                     val next = tree[curIx].next
-                    val autolink = if (next != null) {
-                        scanAutolink(blockText, tree[next].item.start)
-                    } else {
-                        null
-                    }
+                    val autolink =
+                        if (next != null) {
+                            scanAutolink(blockText, tree[next].item.start)
+                        } else {
+                            null
+                        }
 
                     if (autolink != null) {
                         val (ix, uri, linkType) = autolink
                         val node = scanNodesToIx(tree, next, ix)
-                        val textNode = tree.createNode(
-                            Item(
-                                start = tree[curIx].item.start + 1,
-                                end = ix - 1,
-                                body = ItemBody.Text(backslashEscaped = false),
+                        val textNode =
+                            tree.createNode(
+                                Item(
+                                    start = tree[curIx].item.start + 1,
+                                    end = ix - 1,
+                                    body = ItemBody.Text(backslashEscaped = false),
+                                ),
                             )
-                        )
                         val linkIx = allocs.allocateLink(linkType, uri, CowStr.from(""), CowStr.from(""))
                         tree[curIx].item.body = ItemBody.Link(linkIx)
                         tree[curIx].item.end = ix
@@ -307,20 +389,22 @@ class Parser(
                         }
                         continue
                     } else {
-                        val inlineHtml = if (next != null) {
-                            scanInlineHtml(blockText, tree[next].item.start)
-                        } else {
-                            null
-                        }
+                        val inlineHtml =
+                            if (next != null) {
+                                scanInlineHtml(blockText, tree[next].item.start)
+                            } else {
+                                null
+                            }
                         if (inlineHtml != null) {
                             val (span, ix) = inlineHtml
                             val node = scanNodesToIx(tree, next, ix)
-                            tree[curIx].item.body = if (span.isNotEmpty()) {
-                                val convertedString = span.decodeToString()
-                                ItemBody.OwnedHtml(allocs.allocateCow(CowStr.from(convertedString)))
-                            } else {
-                                ItemBody.InlineHtml
-                            }
+                            tree[curIx].item.body =
+                                if (span.isNotEmpty()) {
+                                    val convertedString = span.decodeToString()
+                                    ItemBody.OwnedHtml(allocs.allocateCow(CowStr.from(convertedString)))
+                                } else {
+                                    ItemBody.InlineHtml
+                                }
                             tree[curIx].item.end = ix
                             tree[curIx].next = node
                             prev = cur
@@ -405,11 +489,12 @@ class Parser(
                                 cur = tos.node
                                 curIx = tos.node
                                 val linkIx = allocs.allocateLink(LinkType.Inline, url, title, CowStr.from(""))
-                                tree[curIx].item.body = if (tos.ty == LinkStackTy.Image) {
-                                    ItemBody.Image(linkIx)
-                                } else {
-                                    ItemBody.Link(linkIx)
-                                }
+                                tree[curIx].item.body =
+                                    if (tos.ty == LinkStackTy.Image) {
+                                        ItemBody.Image(linkIx)
+                                    } else {
+                                        ItemBody.Link(linkIx)
+                                    }
                                 tree[curIx].child = tree[curIx].next
                                 tree[curIx].next = nextNode
                                 tree[curIx].item.end = nextIx
@@ -420,61 +505,66 @@ class Parser(
                                     linkStack.disableAllLinks()
                                 }
                             } else {
-                                val scanResult = scanReference(
-                                    tree,
-                                    blockText,
-                                    next,
-                                    options.contains(Options.ENABLE_FOOTNOTES),
-                                    options.hasGfmFootnotes(),
-                                )
-                                val refScanOutcome = when (scanResult) {
-                                    is RefScan.LinkLabel -> {
-                                        val referenceCloseNode = scanNodesToIx(tree, next, scanResult.endIx - 1)
-                                        if (referenceCloseNode == null) {
-                                            null
-                                        } else {
-                                            tree[referenceCloseNode].item.body = ItemBody.MaybeLinkClose(false)
-                                            val nextNode = tree[referenceCloseNode].next
-                                            Pair(nextNode, LinkType.Reference)
+                                val scanResult =
+                                    scanReference(
+                                        tree,
+                                        blockText,
+                                        next,
+                                        options.contains(Options.ENABLE_FOOTNOTES),
+                                        options.hasGfmFootnotes(),
+                                    )
+                                val refScanOutcome =
+                                    when (scanResult) {
+                                        is RefScan.LinkLabel -> {
+                                            val referenceCloseNode = scanNodesToIx(tree, next, scanResult.endIx - 1)
+                                            if (referenceCloseNode == null) {
+                                                null
+                                            } else {
+                                                tree[referenceCloseNode].item.body = ItemBody.MaybeLinkClose(false)
+                                                val nextNode = tree[referenceCloseNode].next
+                                                Pair(nextNode, LinkType.Reference)
+                                            }
                                         }
+                                        is RefScan.Collapsed -> {
+                                            if (!couldBeRef) null else Pair(scanResult.nextNode, LinkType.Collapsed)
+                                        }
+                                        is RefScan.Failed -> {
+                                            if (!couldBeRef) null else Pair(next, LinkType.Shortcut)
+                                        }
+                                        is RefScan.UnexpectedFootnote -> null
                                     }
-                                    is RefScan.Collapsed -> {
-                                        if (!couldBeRef) null else Pair(scanResult.nextNode, LinkType.Collapsed)
-                                    }
-                                    is RefScan.Failed -> {
-                                        if (!couldBeRef) null else Pair(next, LinkType.Shortcut)
-                                    }
-                                    is RefScan.UnexpectedFootnote -> null
-                                }
 
                                 if (refScanOutcome != null) {
                                     val (nodeAfterLink, linkType) = refScanOutcome
-                                    val labelOutcome: Pair<ReferenceLabel, Int>? = when (scanResult) {
-                                        is RefScan.LinkLabel -> Pair(ReferenceLabel.Link(scanResult.label), scanResult.endIx)
-                                        is RefScan.Collapsed, is RefScan.Failed -> {
-                                            val labelStart = tree[tos.node].item.end - 1
-                                            val labelEnd = tree[curIx].item.end
-                                            val sub = text.substring(labelStart, labelEnd)
-                                            val scanned = scanLinkLabel(
-                                                tree,
-                                                sub,
-                                                options.contains(Options.ENABLE_FOOTNOTES),
-                                                options.hasGfmFootnotes(),
-                                            )
-                                            if (scanned != null && labelStart + scanned.first == labelEnd) {
-                                                Pair(scanned.second, labelStart + scanned.first)
-                                            } else {
-                                                null
+                                    val labelOutcome: Pair<ReferenceLabel, Int>? =
+                                        when (scanResult) {
+                                            is RefScan.LinkLabel -> Pair(ReferenceLabel.Link(scanResult.label), scanResult.endIx)
+                                            is RefScan.Collapsed, is RefScan.Failed -> {
+                                                val labelStart = tree[tos.node].item.end - 1
+                                                val labelEnd = tree[curIx].item.end
+                                                val sub = text.substring(labelStart, labelEnd)
+                                                val scanned =
+                                                    scanLinkLabel(
+                                                        tree,
+                                                        sub,
+                                                        options.contains(Options.ENABLE_FOOTNOTES),
+                                                        options.hasGfmFootnotes(),
+                                                    )
+                                                if (scanned != null && labelStart + scanned.first == labelEnd) {
+                                                    Pair(scanned.second, labelStart + scanned.first)
+                                                } else {
+                                                    null
+                                                }
                                             }
+                                            else -> null
                                         }
-                                        else -> null
-                                    }
 
-                                    val id = when (val l = labelOutcome?.first) {
-                                        is ReferenceLabel.Link -> l.label.clone()
-                                        is ReferenceLabel.Footnote -> l.label.clone()
-                                        null -> CowStr.from("")
-                                    }
+                                    val id =
+                                        when (val l = labelOutcome?.first) {
+                                            is ReferenceLabel.Link -> l.label.clone()
+                                            is ReferenceLabel.Footnote -> l.label.clone()
+                                            null -> CowStr.from("")
+                                        }
 
                                     if (labelOutcome != null) {
                                         val (refLabel, end) = labelOutcome
@@ -486,14 +576,15 @@ class Parser(
                                                     def.useCount += 1
                                                 }
                                                 if (!options.hasGfmFootnotes() || allocs.footdefs.contains(allocs.cows[footref].asString())) {
-                                                    val footnoteIx = if (tos.ty == LinkStackTy.Image) {
-                                                        tree[tos.node].next = curIx
-                                                        tree[tos.node].child = null
-                                                        tree[tos.node].item.body = ItemBody.SynthesizeChar('!')
-                                                        curIx
-                                                    } else {
-                                                        tos.node
-                                                    }
+                                                    val footnoteIx =
+                                                        if (tos.ty == LinkStackTy.Image) {
+                                                            tree[tos.node].next = curIx
+                                                            tree[tos.node].child = null
+                                                            tree[tos.node].item.body = ItemBody.SynthesizeChar('!')
+                                                            curIx
+                                                        } else {
+                                                            tos.node
+                                                        }
                                                     tree[footnoteIx].next = next
                                                     tree[footnoteIx].child = null
                                                     tree[footnoteIx].item.body = ItemBody.FootnoteReference(footref)
@@ -505,19 +596,21 @@ class Parser(
                                                 }
                                             }
                                             is ReferenceLabel.Link -> {
-                                                val fetched = fetchLinkTypeUrlTitle(
-                                                    refLabel.label,
-                                                    tree[tos.node].item.start until end,
-                                                    linkType,
-                                                )
+                                                val fetched =
+                                                    fetchLinkTypeUrlTitle(
+                                                        refLabel.label,
+                                                        tree[tos.node].item.start until end,
+                                                        linkType,
+                                                    )
                                                 if (fetched != null) {
                                                     val (defLinkType, url, title) = fetched
                                                     val linkIx = allocs.allocateLink(defLinkType, url, title, id)
-                                                    tree[tos.node].item.body = if (tos.ty == LinkStackTy.Image) {
-                                                        ItemBody.Image(linkIx)
-                                                    } else {
-                                                        ItemBody.Link(linkIx)
-                                                    }
+                                                    tree[tos.node].item.body =
+                                                        if (tos.ty == LinkStackTy.Image) {
+                                                            ItemBody.Image(linkIx)
+                                                        } else {
+                                                            ItemBody.Link(linkIx)
+                                                        }
                                                     val labelNode = tree[tos.node].next
                                                     tree[tos.node].next = nodeAfterLink
                                                     if (labelNode != cur) {
@@ -584,13 +677,14 @@ class Parser(
 
                             while (start > el.start + el.count - matchCount) {
                                 val inc = if (start > el.start + el.count - matchCount + 1) 2 else 1
-                                val ty = if (c == '~') {
-                                    ItemBody.Strikethrough
-                                } else if (inc == 2) {
-                                    ItemBody.Strong
-                                } else {
-                                    ItemBody.Emphasis
-                                }
+                                val ty =
+                                    if (c == '~') {
+                                        ItemBody.Strikethrough
+                                    } else if (inc == 2) {
+                                        ItemBody.Strong
+                                    } else {
+                                        ItemBody.Emphasis
+                                    }
 
                                 val root = start - inc
                                 end += inc
@@ -614,7 +708,7 @@ class Parser(
                                         runLength = el.runLength,
                                         c = el.c,
                                         both = el.both,
-                                    )
+                                    ),
                                 )
                             }
                             count -= matchCount
@@ -634,7 +728,7 @@ class Parser(
                                     count = count,
                                     c = c,
                                     both = both,
-                                )
+                                ),
                             )
                         } else {
                             for (i in 0 until count) {
@@ -650,28 +744,29 @@ class Parser(
                     val c = body.char
                     val canOpen = body.canOpen
                     val canClose = body.canClose
-                    tree[curIx].item.body = when (c) {
-                        '\'' -> {
-                            if (singleQuoteOpen != null && canClose) {
-                                tree[singleQuoteOpen].item.body = ItemBody.SynthesizeChar('‘')
-                                singleQuoteOpen = null
-                            } else if (canOpen) {
-                                singleQuoteOpen = curIx
-                            }
-                            ItemBody.SynthesizeChar('’')
-                        }
-                        else -> {
-                            if (canClose && doubleQuoteOpen) {
-                                doubleQuoteOpen = false
-                                ItemBody.SynthesizeChar('”')
-                            } else {
-                                if (canOpen && !doubleQuoteOpen) {
-                                    doubleQuoteOpen = true
+                    tree[curIx].item.body =
+                        when (c) {
+                            '\'' -> {
+                                if (singleQuoteOpen != null && canClose) {
+                                    tree[singleQuoteOpen].item.body = ItemBody.SynthesizeChar('‘')
+                                    singleQuoteOpen = null
+                                } else if (canOpen) {
+                                    singleQuoteOpen = curIx
                                 }
-                                ItemBody.SynthesizeChar('“')
+                                ItemBody.SynthesizeChar('’')
+                            }
+                            else -> {
+                                if (canClose && doubleQuoteOpen) {
+                                    doubleQuoteOpen = false
+                                    ItemBody.SynthesizeChar('”')
+                                } else {
+                                    if (canOpen && !doubleQuoteOpen) {
+                                        doubleQuoteOpen = true
+                                    }
+                                    ItemBody.SynthesizeChar('“')
+                                }
                             }
                         }
-                    }
                     prev = cur
                     cur = tree[curIx].next
                 }
@@ -727,14 +822,15 @@ class Parser(
         scanSeparator()
 
         val titleRes = scanLinkTitle(underlying, ix, node)
-        val title = if (titleRes != null) {
-            val (bytesScanned, t) = titleRes
-            ix += bytesScanned
-            scanSeparator()
-            t
-        } else {
-            CowStr.from("")
-        }
+        val title =
+            if (titleRes != null) {
+                val (bytesScanned, t) = titleRes
+                ix += bytesScanned
+                scanSeparator()
+                t
+            } else {
+                CowStr.from("")
+            }
 
         if (ix >= underlying.length || underlying[ix] != ')') {
             return null
@@ -761,12 +857,13 @@ class Parser(
         while (i < textParam.length) {
             val c = textParam[i]
             if (c == close) {
-                val cow = if (mark == startIx + 1) {
-                    Pair(i - startIx + 1, CowStr.from(textParam.substring(mark, i)))
-                } else {
-                    title.append(textParam.substring(mark, i))
-                    Pair(i - startIx + 1, CowStr.from(title.toString()))
-                }
+                val cow =
+                    if (mark == startIx + 1) {
+                        Pair(i - startIx + 1, CowStr.from(textParam.substring(mark, i)))
+                    } else {
+                        title.append(textParam.substring(mark, i))
+                        Pair(i - startIx + 1, CowStr.from(title.toString()))
+                    }
                 return cow
             }
             if (c == open) {
@@ -836,32 +933,34 @@ class Parser(
             }
         }
 
-        val s = if (buf != null) {
-            buf.append(text.substring(startIx, spanEnd))
-            buf.toString()
-        } else {
-            text.substring(spanStart, spanEnd)
-        }
+        val s =
+            if (buf != null) {
+                buf.append(text.substring(startIx, spanEnd))
+                buf.toString()
+            } else {
+                text.substring(spanStart, spanEnd)
+            }
 
         val opening = s.startsWith(' ')
         val closing = s.endsWith(' ')
         val allSpaces = s.all { it == ' ' }
 
-        val cowStr = if (!allSpaces && opening && closing) {
-            if (buf != null) {
-                buf.deleteAt(0)
-                buf.deleteAt(buf.length - 1)
+        val cowStr =
+            if (!allSpaces && opening && closing) {
+                if (buf != null) {
+                    buf.deleteAt(0)
+                    buf.deleteAt(buf.length - 1)
+                    CowStr.from(buf.toString())
+                } else {
+                    val lo = spanStart + 1
+                    val hi = max(lo, spanEnd - 1)
+                    CowStr.from(text.substring(lo, hi))
+                }
+            } else if (buf != null) {
                 CowStr.from(buf.toString())
             } else {
-                val lo = spanStart + 1
-                val hi = max(lo, spanEnd - 1)
-                CowStr.from(text.substring(lo, hi))
+                CowStr.from(text.substring(spanStart, spanEnd))
             }
-        } else if (buf != null) {
-            CowStr.from(buf.toString())
-        } else {
-            CowStr.from(text.substring(spanStart, spanEnd))
-        }
 
         if (precedingBackslash) {
             tree[open].item.body = ItemBody.Text(backslashEscaped = true)
@@ -886,11 +985,12 @@ class Parser(
             val endIx = scanInlineHtmlProcessing(blockText, ix + 1, htmlScanGuard) ?: return null
             Pair(byteArrayOf(), endIx)
         } else {
-            val inner = scanHtmlBlockInner(blockText.substring(ix - 1)) { s ->
-                val lineStart = LineStart(s, 0)
-                scanContainers(tree, lineStart, options.hasGfmFootnotes())
-                lineStart.bytesScanned
-            } ?: return null
+            val inner =
+                scanHtmlBlockInner(blockText.substring(ix - 1)) { s ->
+                    val lineStart = LineStart(s, 0)
+                    scanContainers(tree, lineStart, options.hasGfmFootnotes())
+                    lineStart.bytesScanned
+                } ?: return null
             val (span, i) = inner
             Pair(span, i + ix - 1)
         }
@@ -898,9 +998,7 @@ class Parser(
 
     fun intoOffsetIter(): OffsetIter = OffsetIter(this)
 
-    override fun hasNext(): Boolean {
-        return tree.cur != null || tree.peekUp() != null
-    }
+    override fun hasNext(): Boolean = tree.cur != null || tree.peekUp() != null
 
     override fun next(): Event {
         val curIx = tree.cur
@@ -953,22 +1051,17 @@ class Parser(
 }
 
 class OffsetIter internal constructor(
-    private val inner: Parser
+    private val inner: Parser,
 ) : Iterator<SpannedEvent> {
-
     fun referenceDefinitions(): RefDefs = inner.referenceDefinitions()
 
-    override fun hasNext(): Boolean {
-        return inner.hasNext()
-    }
+    override fun hasNext(): Boolean = inner.hasNext()
 
-    override fun next(): SpannedEvent {
-        return inner.nextWithSpan() ?: throw NoSuchElementException()
-    }
+    override fun next(): SpannedEvent = inner.nextWithSpan() ?: throw NoSuchElementException()
 }
 
-internal fun bodyToTagEnd(body: ItemBody): TagEnd {
-    return when (body) {
+internal fun bodyToTagEnd(body: ItemBody): TagEnd =
+    when (body) {
         is ItemBody.Paragraph -> TagEnd.Paragraph
         is ItemBody.Emphasis -> TagEnd.Emphasis
         is ItemBody.Strong -> TagEnd.Strong
@@ -992,82 +1085,82 @@ internal fun bodyToTagEnd(body: ItemBody): TagEnd {
         is ItemBody.MetadataBlock -> TagEnd.MetadataBlock(body.kind)
         else -> error("unexpected item body $body")
     }
-}
 
 internal fun itemToEvent(item: Item, text: String, allocs: Allocations): Event {
-    val tag = when (val body = item.body) {
-        is ItemBody.Text -> return Event.Text(CowStr.from(text.substring(item.start, item.end)))
-        is ItemBody.Code -> return Event.Code(allocs.takeCow(body.cowIndex))
-        is ItemBody.SynthesizeText -> return Event.Text(allocs.takeCow(body.cowIndex))
-        is ItemBody.SynthesizeChar -> return Event.Text(CowStr.from(body.char.toString()))
-        is ItemBody.HtmlBlock -> Tag.HtmlBlock
-        is ItemBody.Html -> return Event.Html(CowStr.from(text.substring(item.start, item.end)))
-        is ItemBody.InlineHtml -> return Event.InlineHtml(CowStr.from(text.substring(item.start, item.end)))
-        is ItemBody.OwnedHtml -> return Event.Html(allocs.takeCow(body.cowIndex))
-        is ItemBody.SoftBreak -> return Event.SoftBreak
-        is ItemBody.HardBreak -> return Event.HardBreak
-        is ItemBody.FootnoteReference -> return Event.FootnoteReference(allocs.takeCow(body.cowIndex))
-        is ItemBody.TaskListMarker -> return Event.TaskListMarker(body.isChecked)
-        is ItemBody.Rule -> return Event.Rule
-        is ItemBody.Paragraph -> Tag.Paragraph
-        is ItemBody.Emphasis -> Tag.Emphasis
-        is ItemBody.Strong -> Tag.Strong
-        is ItemBody.Strikethrough -> Tag.Strikethrough
-        is ItemBody.Link -> {
-            val tuple = allocs.takeLink(body.linkIndex)
-            Tag.Link(
-                linkType = tuple.type,
-                destUrl = tuple.url,
-                title = tuple.title,
-                id = tuple.id,
-            )
-        }
-        is ItemBody.Image -> {
-            val tuple = allocs.takeLink(body.linkIndex)
-            Tag.Image(
-                linkType = tuple.type,
-                destUrl = tuple.url,
-                title = tuple.title,
-                id = tuple.id,
-            )
-        }
-        is ItemBody.Heading -> {
-            if (body.headingIndex != null) {
-                val headingAttrs = allocs.headings[body.headingIndex]
-                Tag.Heading(
-                    level = body.level,
-                    id = headingAttrs.id,
-                    classes = headingAttrs.classes,
-                    attrs = headingAttrs.attrs,
-                )
-            } else {
-                Tag.Heading(
-                    level = body.level,
-                    id = null,
-                    classes = emptyList(),
-                    attrs = emptyList(),
+    val tag =
+        when (val body = item.body) {
+            is ItemBody.Text -> return Event.Text(CowStr.from(text.substring(item.start, item.end)))
+            is ItemBody.Code -> return Event.Code(allocs.takeCow(body.cowIndex))
+            is ItemBody.SynthesizeText -> return Event.Text(allocs.takeCow(body.cowIndex))
+            is ItemBody.SynthesizeChar -> return Event.Text(CowStr.from(body.char.toString()))
+            is ItemBody.HtmlBlock -> Tag.HtmlBlock
+            is ItemBody.Html -> return Event.Html(CowStr.from(text.substring(item.start, item.end)))
+            is ItemBody.InlineHtml -> return Event.InlineHtml(CowStr.from(text.substring(item.start, item.end)))
+            is ItemBody.OwnedHtml -> return Event.Html(allocs.takeCow(body.cowIndex))
+            is ItemBody.SoftBreak -> return Event.SoftBreak
+            is ItemBody.HardBreak -> return Event.HardBreak
+            is ItemBody.FootnoteReference -> return Event.FootnoteReference(allocs.takeCow(body.cowIndex))
+            is ItemBody.TaskListMarker -> return Event.TaskListMarker(body.isChecked)
+            is ItemBody.Rule -> return Event.Rule
+            is ItemBody.Paragraph -> Tag.Paragraph
+            is ItemBody.Emphasis -> Tag.Emphasis
+            is ItemBody.Strong -> Tag.Strong
+            is ItemBody.Strikethrough -> Tag.Strikethrough
+            is ItemBody.Link -> {
+                val tuple = allocs.takeLink(body.linkIndex)
+                Tag.Link(
+                    linkType = tuple.type,
+                    destUrl = tuple.url,
+                    title = tuple.title,
+                    id = tuple.id,
                 )
             }
-        }
-        is ItemBody.FencedCodeBlock -> Tag.CodeBlock(CodeBlockKind.Fenced(allocs.takeCow(body.cowIndex)))
-        is ItemBody.IndentCodeBlock -> Tag.CodeBlock(CodeBlockKind.Indented)
-        is ItemBody.BlockQuote -> Tag.BlockQuote
-        is ItemBody.List -> {
-            if (body.listChar == '.' || body.listChar == ')') {
-                Tag.List(body.listStart)
-            } else {
-                Tag.List(null)
+            is ItemBody.Image -> {
+                val tuple = allocs.takeLink(body.linkIndex)
+                Tag.Image(
+                    linkType = tuple.type,
+                    destUrl = tuple.url,
+                    title = tuple.title,
+                    id = tuple.id,
+                )
             }
+            is ItemBody.Heading -> {
+                if (body.headingIndex != null) {
+                    val headingAttrs = allocs.headings[body.headingIndex]
+                    Tag.Heading(
+                        level = body.level,
+                        id = headingAttrs.id,
+                        classes = headingAttrs.classes,
+                        attrs = headingAttrs.attrs,
+                    )
+                } else {
+                    Tag.Heading(
+                        level = body.level,
+                        id = null,
+                        classes = emptyList(),
+                        attrs = emptyList(),
+                    )
+                }
+            }
+            is ItemBody.FencedCodeBlock -> Tag.CodeBlock(CodeBlockKind.Fenced(allocs.takeCow(body.cowIndex)))
+            is ItemBody.IndentCodeBlock -> Tag.CodeBlock(CodeBlockKind.Indented)
+            is ItemBody.BlockQuote -> Tag.BlockQuote
+            is ItemBody.List -> {
+                if (body.listChar == '.' || body.listChar == ')') {
+                    Tag.List(body.listStart)
+                } else {
+                    Tag.List(null)
+                }
+            }
+            is ItemBody.ListItem -> Tag.Item
+            is ItemBody.TableHead -> Tag.TableHead
+            is ItemBody.TableCell -> Tag.TableCell
+            is ItemBody.TableRow -> Tag.TableRow
+            is ItemBody.Table -> Tag.Table(allocs.takeAlignment(body.alignmentIndex))
+            is ItemBody.FootnoteDefinition -> Tag.FootnoteDefinition(allocs.takeCow(body.cowIndex))
+            is ItemBody.MetadataBlock -> Tag.MetadataBlock(body.kind)
+            else -> error("unexpected item body $body")
         }
-        is ItemBody.ListItem -> Tag.Item
-        is ItemBody.TableHead -> Tag.TableHead
-        is ItemBody.TableCell -> Tag.TableCell
-        is ItemBody.TableRow -> Tag.TableRow
-        is ItemBody.Table -> Tag.Table(allocs.takeAlignment(body.alignmentIndex))
-        is ItemBody.FootnoteDefinition -> Tag.FootnoteDefinition(allocs.takeCow(body.cowIndex))
-        is ItemBody.MetadataBlock -> Tag.MetadataBlock(body.kind)
-        else -> error("unexpected item body $body")
-    }
 
     return Event.Start(tag)
 }
@@ -1122,18 +1215,17 @@ internal fun Tree<Item>.appendText(start: Int, end: Int, backslashEscaped: Boole
                 start = start,
                 end = end,
                 body = ItemBody.Text(backslashEscaped),
-            )
+            ),
         )
     }
 }
 
 internal fun Tree<Item>.isInTable(): Boolean {
-    fun mightBeInTable(item: Item): Boolean {
-        return item.body.isInline() ||
+    fun mightBeInTable(item: Item): Boolean =
+        item.body.isInline() ||
             item.body is ItemBody.TableHead ||
             item.body is ItemBody.TableRow ||
             item.body is ItemBody.TableCell
-    }
     val spine = walkSpine().reversed()
     for (ix in spine) {
         if (this[ix].item.body is ItemBody.Table) {
@@ -1176,8 +1268,8 @@ private class InlineStack {
         lowerBounds.fill(0)
     }
 
-    fun getLowerbound(c: Char, count: Int, both: Boolean): Int {
-        return if (c == '_') {
+    fun getLowerbound(c: Char, count: Int, both: Boolean): Int =
+        if (c == '_') {
             val mod3Lower = lowerBounds[UNDERSCORE_BASE + count % 3]
             if (both) mod3Lower else min(mod3Lower, lowerBounds[UNDERSCORE_NOT_BOTH])
         } else if (c == '*') {
@@ -1186,7 +1278,6 @@ private class InlineStack {
         } else {
             lowerBounds[TILDES]
         }
-    }
 
     fun setLowerbound(c: Char, count: Int, both: Boolean, newBound: Int) {
         if (c == '_') {
@@ -1266,9 +1357,17 @@ private class InlineStack {
 }
 
 internal sealed class RefScan {
-    data class LinkLabel(val label: CowStr, val endIx: Int) : RefScan()
-    data class Collapsed(val nextNode: TreeIndex?) : RefScan()
+    data class LinkLabel(
+        val label: CowStr,
+        val endIx: Int,
+    ) : RefScan()
+
+    data class Collapsed(
+        val nextNode: TreeIndex?,
+    ) : RefScan()
+
     data object UnexpectedFootnote : RefScan()
+
     data object Failed : RefScan()
 }
 
@@ -1304,11 +1403,12 @@ internal fun scanLinkLabel(
         lineStart.bytesScanned
     }
     if (allowFootnoteRefs && text[1] == '^' && (text.length <= 2 || text[2] != ']')) {
-        val handler: ((String) -> Int?)? = if (gfmFootnotes) {
-            null
-        } else {
-            linebreakHandler
-        }
+        val handler: ((String) -> Int?)? =
+            if (gfmFootnotes) {
+                null
+            } else {
+                linebreakHandler
+            }
         val scanRest = scanLinkLabelRest(text.substring(2), handler, tree.isInTable())
         if (scanRest != null) {
             val (byteIndex, cow) = scanRest
@@ -1319,7 +1419,6 @@ internal fun scanLinkLabel(
     val (byteIndex, cow) = scanRest
     return Pair(byteIndex + 1, ReferenceLabel.Link(cow))
 }
-
 
 internal fun scanReference(
     tree: Tree<Item>,

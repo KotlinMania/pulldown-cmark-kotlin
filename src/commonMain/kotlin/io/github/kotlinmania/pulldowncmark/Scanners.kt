@@ -9,70 +9,71 @@ internal class HtmlScanGuard(
 )
 
 // Sorted HTML tags for binary search
-private val HTML_TAGS = arrayOf(
-    "address",
-    "article",
-    "aside",
-    "base",
-    "basefont",
-    "blockquote",
-    "body",
-    "caption",
-    "center",
-    "col",
-    "colgroup",
-    "dd",
-    "details",
-    "dialog",
-    "dir",
-    "div",
-    "dl",
-    "dt",
-    "fieldset",
-    "figcaption",
-    "figure",
-    "footer",
-    "form",
-    "frame",
-    "frameset",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    "head",
-    "header",
-    "hr",
-    "html",
-    "iframe",
-    "legend",
-    "li",
-    "link",
-    "main",
-    "menu",
-    "menuitem",
-    "nav",
-    "noframes",
-    "ol",
-    "optgroup",
-    "option",
-    "p",
-    "param",
-    "search",
-    "section",
-    "summary",
-    "table",
-    "tbody",
-    "td",
-    "tfoot",
-    "th",
-    "thead",
-    "title",
-    "tr",
-    "track",
-    "ul",
-)
+private val HTML_TAGS =
+    arrayOf(
+        "address",
+        "article",
+        "aside",
+        "base",
+        "basefont",
+        "blockquote",
+        "body",
+        "caption",
+        "center",
+        "col",
+        "colgroup",
+        "dd",
+        "details",
+        "dialog",
+        "dir",
+        "div",
+        "dl",
+        "dt",
+        "fieldset",
+        "figcaption",
+        "figure",
+        "footer",
+        "form",
+        "frame",
+        "frameset",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "head",
+        "header",
+        "hr",
+        "html",
+        "iframe",
+        "legend",
+        "li",
+        "link",
+        "main",
+        "menu",
+        "menuitem",
+        "nav",
+        "noframes",
+        "ol",
+        "optgroup",
+        "option",
+        "p",
+        "param",
+        "search",
+        "section",
+        "summary",
+        "table",
+        "tbody",
+        "td",
+        "tfoot",
+        "th",
+        "thead",
+        "title",
+        "tr",
+        "track",
+        "ul",
+    )
 
 /**
  * Analysis of the beginning of a line, including indentation and container markers.
@@ -85,14 +86,15 @@ internal class LineStart(
     private var spacesRemaining: Int = 0,
     private var minHruleOffset: Int = 0,
 ) {
-    fun copy(): LineStart = LineStart(
-        text = text,
-        startIx = startIx,
-        ix = ix,
-        tabStart = tabStart,
-        spacesRemaining = spacesRemaining,
-        minHruleOffset = minHruleOffset,
-    )
+    fun copy(): LineStart =
+        LineStart(
+            text = text,
+            startIx = startIx,
+            ix = ix,
+            tabStart = tabStart,
+            spacesRemaining = spacesRemaining,
+            minHruleOffset = minHruleOffset,
+        )
 
     fun scanSpace(nSpace: Int): Boolean = scanSpaceInner(nSpace) == 0
 
@@ -227,20 +229,21 @@ internal class LineStart(
             return null
         }
         val c = text[ix]
-        val isChecked = when {
-            isAsciiWhitespaceNoNl(c) -> {
-                ix++
-                false
+        val isChecked =
+            when {
+                isAsciiWhitespaceNoNl(c) -> {
+                    ix++
+                    false
+                }
+                c == 'x' || c == 'X' -> {
+                    ix++
+                    true
+                }
+                else -> {
+                    restore(save)
+                    return null
+                }
             }
-            c == 'x' || c == 'X' -> {
-                ix++
-                true
-            }
-            else -> {
-                restore(save)
-                return null
-            }
-        }
         if (!scanCh(']')) {
             restore(save)
             return null
@@ -421,11 +424,12 @@ internal fun scanAtxHeading(text: String, startIx: Int): HeadingLevel? {
 internal fun scanSetextHeading(text: String, startIx: Int): Pair<Int, HeadingLevel>? {
     if (startIx >= text.length) return null
     val c = text[startIx]
-    val level = when (c) {
-        '=' -> HeadingLevel.H1
-        '-' -> HeadingLevel.H2
-        else -> return null
-    }
+    val level =
+        when (c) {
+            '=' -> HeadingLevel.H1
+            '-' -> HeadingLevel.H2
+            else -> return null
+        }
     var i = startIx + 1 + scanChRepeat(text, startIx + 1, c)
     val blank = scanBlankLine(text, i) ?: return null
     i += blank
@@ -460,12 +464,13 @@ internal fun scanTableHead(text: String, startIx: Int): Pair<Int, List<Alignment
         when (c) {
             ' ' -> {}
             ':' -> {
-                activeCol = when {
-                    startCol && activeCol == Alignment.None -> Alignment.Left
-                    !startCol && activeCol == Alignment.Left -> Alignment.Center
-                    !startCol && activeCol == Alignment.None -> Alignment.Right
-                    else -> activeCol
-                }
+                activeCol =
+                    when {
+                        startCol && activeCol == Alignment.None -> Alignment.Left
+                        !startCol && activeCol == Alignment.Left -> Alignment.Center
+                        !startCol && activeCol == Alignment.None -> Alignment.Right
+                        else -> activeCol
+                    }
                 startCol = false
             }
             '-' -> {
@@ -553,17 +558,18 @@ internal fun scanBlockquoteStart(text: String, startIx: Int): Int? {
 internal fun scanListItem(text: String, startIx: Int): Quadruple<Int, Char, Long, Int>? {
     if (startIx >= text.length) return null
     var c = text[startIx]
-    val (w, start) = when {
-        c == '-' || c == '+' || c == '*' -> Pair(1, 0L)
-        c.isDigit() -> {
-            val (length, parsedVal) = parseDecimal(text, startIx, 9)
-            if (startIx + length >= text.length) return null
-            c = text[startIx + length]
-            if (c != '.' && c != ')') return null
-            Pair(length + 1, parsedVal)
+    val (w, start) =
+        when {
+            c == '-' || c == '+' || c == '*' -> Pair(1, 0L)
+            c.isDigit() -> {
+                val (length, parsedVal) = parseDecimal(text, startIx, 9)
+                if (startIx + length >= text.length) return null
+                c = text[startIx + length]
+                if (c != '.' && c != ')') return null
+                Pair(length + 1, parsedVal)
+            }
+            else -> return null
         }
-        else -> return null
-    }
     val (postN, postIndentRaw) = calcIndent(text, startIx + w, 5)
     var postn = postN
     var postindent = postIndentRaw
@@ -581,7 +587,12 @@ internal fun scanListItem(text: String, startIx: Int): Quadruple<Int, Char, Long
     return Quadruple(w + postn, c, start, w + postindent)
 }
 
-internal data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+internal data class Quadruple<A, B, C, D>(
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D,
+)
 
 internal fun parseDecimal(text: String, startIx: Int, limit: Int): Pair<Int, Long> {
     var count = 0
@@ -602,12 +613,13 @@ internal fun parseHex(text: String, startIx: Int, limit: Int): Pair<Int, Int> {
     var i = startIx
     while (i < text.length && count < limit) {
         val c = text[i]
-        val digit = when {
-            c in '0'..'9' -> c - '0'
-            c in 'a'..'f' -> c - 'a' + 10
-            c in 'A'..'F' -> c - 'A' + 10
-            else -> break
-        }
+        val digit =
+            when {
+                c in '0'..'9' -> c - '0'
+                c in 'a'..'f' -> c - 'a' + 10
+                c in 'A'..'F' -> c - 'A' + 10
+                else -> break
+            }
         acc = acc * 16 + digit
         count++
         i++
@@ -619,29 +631,31 @@ internal fun scanEntity(text: String, startIx: Int): Pair<Int, CowStr?> {
     var end = startIx + 1
     if (end < text.length && text[end] == '#') {
         end++
-        val (bytecount, codepoint) = if (end < text.length && (text[end] == 'x' || text[end] == 'X')) {
-            end++
-            parseHex(text, end, 6)
-        } else {
-            val (c, num) = parseDecimal(text, end, 7)
-            Pair(c, num.toInt())
-        }
+        val (bytecount, codepoint) =
+            if (end < text.length && (text[end] == 'x' || text[end] == 'X')) {
+                end++
+                parseHex(text, end, 6)
+            } else {
+                val (c, num) = parseDecimal(text, end, 7)
+                Pair(c, num.toInt())
+            }
         end += bytecount
         if (bytecount == 0 || end >= text.length || text[end] != ';') {
             return Pair(0, null)
         }
-        val ch = if (codepoint in 1..0x10FFFF) {
-            if (codepoint <= 0xFFFF) {
-                codepoint.toChar().toString()
+        val ch =
+            if (codepoint in 1..0x10FFFF) {
+                if (codepoint <= 0xFFFF) {
+                    codepoint.toChar().toString()
+                } else {
+                    val hexVal = codepoint - 0x10000
+                    val high = (0xD800 + (hexVal shr 10)).toChar()
+                    val low = (0xDC00 + (hexVal and 0x3FF)).toChar()
+                    "$high$low"
+                }
             } else {
-                val hexVal = codepoint - 0x10000
-                val high = (0xD800 + (hexVal shr 10)).toChar()
-                val low = (0xDC00 + (hexVal and 0x3FF)).toChar()
-                "$high$low"
+                "\uFFFD"
             }
-        } else {
-            "\uFFFD"
-        }
         return Pair(end + 1 - startIx, CowStr(ch))
     }
     val nameLen = scanWhile(text, end) { isAsciiAlphanumeric(it) }
@@ -758,7 +772,11 @@ internal fun startsHtmlBlockType6(text: String, startIx: Int): Boolean {
     val remIx = i + n
     if (remIx >= text.length) return true
     val c = text[remIx]
-    return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '>' ||
+    return c == ' ' ||
+        c == '\t' ||
+        c == '\r' ||
+        c == '\n' ||
+        c == '>' ||
         (text.length - remIx >= 2 && text.substring(remIx, remIx + 2) == "/>")
 }
 
@@ -806,9 +824,27 @@ private fun scanEmail(text: String, startIx: Int): Pair<Int, CowStr>? {
         val c = text[i]
         i++
         when {
-            isAsciiAlphanumeric(c) || c == '.' || c == '!' || c == '#' || c == '$' || c == '%' ||
-                c == '&' || c == '\'' || c == '*' || c == '+' || c == '/' || c == '=' || c == '?' ||
-                c == '^' || c == '_' || c == '`' || c == '{' || c == '|' || c == '}' || c == '~' || c == '-' -> {}
+            isAsciiAlphanumeric(c) ||
+                c == '.' ||
+                c == '!' ||
+                c == '#' ||
+                c == '$' ||
+                c == '%' ||
+                c == '&' ||
+                c == '\'' ||
+                c == '*' ||
+                c == '+' ||
+                c == '/' ||
+                c == '=' ||
+                c == '?' ||
+                c == '^' ||
+                c == '_' ||
+                c == '`' ||
+                c == '{' ||
+                c == '|' ||
+                c == '}' ||
+                c == '~' ||
+                c == '-' -> {}
             c == '@' && i - startIx > 1 -> break
             else -> return null
         }
@@ -981,4 +1017,3 @@ internal fun scanHtmlType7(data: String, startIx: Int = 0): Int? {
     scanBlankLine(sub, i) ?: return null
     return i
 }
-

@@ -7,10 +7,13 @@ import kotlin.jvm.JvmInline
  * 1-based index into the tree node storage.
  */
 @JvmInline
-value class TreeIndex(val get: Int) : Comparable<TreeIndex> {
+value class TreeIndex(
+    val get: Int,
+) : Comparable<TreeIndex> {
     override fun compareTo(other: TreeIndex): Int = get.compareTo(other.get)
 
     operator fun plus(offset: Int): TreeIndex = TreeIndex(get + offset)
+
     operator fun minus(offset: Int): TreeIndex = TreeIndex(get - offset)
 }
 
@@ -89,9 +92,7 @@ class Tree<T>(
 
     fun peekUp(): TreeIndex? = spine.lastOrNull()
 
-    fun peekGrandparent(): TreeIndex? {
-        return if (spine.size >= 2) spine[spine.size - 2] else null
-    }
+    fun peekGrandparent(): TreeIndex? = if (spine.size >= 2) spine[spine.size - 2] else null
 
     fun isEmpty(): Boolean = nodes.size <= 1
 
@@ -133,10 +134,11 @@ internal fun Tree<Item>.truncateSiblings(endByteIx: Int) {
             this[childIx].next = null
             cur = childIx
         } else if (this[childIx].item.start == endByteIx) {
-            val isPrevCharBackslash = when (this[childIx].item.body) {
-                is ItemBody.Text -> (this[childIx].item.body as ItemBody.Text).backslashEscaped
-                else -> false
-            }
+            val isPrevCharBackslash =
+                when (this[childIx].item.body) {
+                    is ItemBody.Text -> (this[childIx].item.body as ItemBody.Text).backslashEscaped
+                    else -> false
+                }
             if (isPrevCharBackslash) {
                 val lastByteIx = endByteIx - 1
                 this[childIx].item.start = lastByteIx

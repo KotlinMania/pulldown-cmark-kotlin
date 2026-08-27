@@ -6,16 +6,17 @@ import kotlin.math.max
 internal fun runFirstPass(text: String, options: Options): Pair<Tree<Item>, Allocations> {
     val startCapacity = max(128, text.length / 32)
     val lookupTable = createLut(options)
-    val firstPass = FirstPass(
-        text = text,
-        tree = Tree({ Item(0, 0, ItemBody.Root) }, startCapacity),
-        beginListItem = null,
-        lastLineBlank = false,
-        allocs = Allocations(),
-        options = options,
-        lookupTable = lookupTable,
-        nextParagraphTask = null,
-    )
+    val firstPass =
+        FirstPass(
+            text = text,
+            tree = Tree({ Item(0, 0, ItemBody.Root) }, startCapacity),
+            beginListItem = null,
+            lastLineBlank = false,
+            allocs = Allocations(),
+            options = options,
+            lookupTable = lookupTable,
+            nextParagraphTask = null,
+        )
     return firstPass.run()
 }
 
@@ -98,7 +99,7 @@ internal class FirstPass(
                         start = containerStart,
                         end = afterMarkerIndex,
                         body = ItemBody.ListItem(indent),
-                    )
+                    ),
                 )
                 tree.push()
                 val n = scanBlankLine(text, afterMarkerIndex)
@@ -108,13 +109,14 @@ internal class FirstPass(
                 }
                 if (options.contains(Options.ENABLE_TASKLISTS)) {
                     val isChecked = lineStart.scanTaskListMarker()
-                    nextParagraphTask = isChecked?.let {
-                        Item(
-                            start = afterMarkerIndex,
-                            end = startIx + lineStart.bytesScanned,
-                            body = ItemBody.TaskListMarker(it),
-                        )
-                    }
+                    nextParagraphTask =
+                        isChecked?.let {
+                            Item(
+                                start = afterMarkerIndex,
+                                end = startIx + lineStart.bytesScanned,
+                                body = ItemBody.TaskListMarker(it),
+                            )
+                        }
                 }
             } else if (lineStart.scanBlockquoteMarker()) {
                 finishList(startIx)
@@ -123,7 +125,7 @@ internal class FirstPass(
                         start = containerStart,
                         end = 0,
                         body = ItemBody.BlockQuote,
-                    )
+                    ),
                 )
                 tree.push()
             } else {
@@ -162,12 +164,13 @@ internal class FirstPass(
         }
 
         val ixScan = startIx + lineStart.bytesScanned
-        val metadataBlock = scanMetadataBlock(
-            text,
-            ixScan,
-            options.contains(Options.ENABLE_YAML_STYLE_METADATA_BLOCKS),
-            options.contains(Options.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS),
-        )
+        val metadataBlock =
+            scanMetadataBlock(
+                text,
+                ixScan,
+                options.contains(Options.ENABLE_YAML_STYLE_METADATA_BLOCKS),
+                options.contains(Options.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS),
+            )
         if (metadataBlock != null) {
             return parseMetadataBlock(ixScan, indent, metadataBlock.second)
         }
@@ -215,11 +218,12 @@ internal class FirstPass(
             if (nl != null) {
                 currentIx += nl
                 val lazyLineStart = LineStart(text, currentIx)
-                val currentContainer = scanContainers(
-                    tree,
-                    lazyLineStart,
-                    options.hasGfmFootnotes(),
-                ) == tree.spineLen()
+                val currentContainer =
+                    scanContainers(
+                        tree,
+                        lazyLineStart,
+                        options.hasGfmFootnotes(),
+                    ) == tree.spineLen()
                 if (!lazyLineStart.scanSpace(4) &&
                     scanParagraphInterrupt(currentIx + lazyLineStart.bytesScanned, currentContainer)
                 ) {
@@ -265,13 +269,14 @@ internal class FirstPass(
         var ix = ixParam
 
         val oldCur = tree.cur
-        val rowIx = tree.append(
-            Item(
-                start = ix,
-                end = 0,
-                body = ItemBody.TableRow,
+        val rowIx =
+            tree.append(
+                Item(
+                    start = ix,
+                    end = 0,
+                    body = ItemBody.TableRow,
+                ),
             )
-        )
         tree.push()
 
         while (true) {
@@ -285,13 +290,14 @@ internal class FirstPass(
                 break
             }
 
-            val cellIx = tree.append(
-                Item(
-                    start = startIx,
-                    end = ix,
-                    body = ItemBody.TableCell,
+            val cellIx =
+                tree.append(
+                    Item(
+                        start = startIx,
+                        end = ix,
+                        body = ItemBody.TableCell,
+                    ),
                 )
-            )
             tree.push()
             val (nextIx, _) = parseLine(ix, null, TableParseMode.Active)
 
@@ -322,7 +328,7 @@ internal class FirstPass(
                     start = ix,
                     end = ix,
                     body = ItemBody.TableCell,
-                )
+                ),
             )
         }
 
@@ -341,11 +347,12 @@ internal class FirstPass(
     ): Pair<Int, TreeIndex>? {
         var ix = ixParam
         val lineStart = LineStart(text, ix)
-        val currentContainer = scanContainers(
-            tree,
-            lineStart,
-            options.hasGfmFootnotes(),
-        ) == tree.spineLen()
+        val currentContainer =
+            scanContainers(
+                tree,
+                lineStart,
+                options.hasGfmFootnotes(),
+            ) == tree.spineLen()
         if (!currentContainer) {
             return null
         }
@@ -359,13 +366,14 @@ internal class FirstPass(
     }
 
     private fun parseParagraph(startIx: Int): Int {
-        val nodeIx = tree.append(
-            Item(
-                start = startIx,
-                end = 0,
-                body = ItemBody.Paragraph,
+        val nodeIx =
+            tree.append(
+                Item(
+                    start = startIx,
+                    end = 0,
+                    body = ItemBody.Paragraph,
+                ),
             )
-        )
         tree.push()
 
         if (nextParagraphTask != null) {
@@ -375,11 +383,12 @@ internal class FirstPass(
 
         var ix = startIx
         while (true) {
-            val scanMode = if (options.contains(Options.ENABLE_TABLES) && ix == startIx) {
-                TableParseMode.Scan
-            } else {
-                TableParseMode.Disabled
-            }
+            val scanMode =
+                if (options.contains(Options.ENABLE_TABLES) && ix == startIx) {
+                    TableParseMode.Scan
+                } else {
+                    TableParseMode.Disabled
+                }
             val (nextIx, brk) = parseLine(ix, null, scanMode)
 
             if (brk != null && brk.body is ItemBody.Table) {
@@ -397,16 +406,18 @@ internal class FirstPass(
 
             ix = nextIx
             val lineStart = LineStart(text, ix)
-            val currentContainer = scanContainers(
-                tree,
-                lineStart,
-                options.hasGfmFootnotes(),
-            ) == tree.spineLen()
-            val trailingBackslashPos = if (brk != null && brk.body is ItemBody.HardBreak && (brk.body as ItemBody.HardBreak).isBackslash && brk.start < text.length && text[brk.start] == '\\') {
-                brk.start
-            } else {
-                null
-            }
+            val currentContainer =
+                scanContainers(
+                    tree,
+                    lineStart,
+                    options.hasGfmFootnotes(),
+                ) == tree.spineLen()
+            val trailingBackslashPos =
+                if (brk != null && brk.body is ItemBody.HardBreak && (brk.body as ItemBody.HardBreak).isBackslash && brk.start < text.length && text[brk.start] == '\\') {
+                    brk.start
+                } else {
+                    null
+                }
 
             if (!lineStart.scanSpace(4)) {
                 val ixNew = ix + lineStart.bytesScanned
@@ -462,12 +473,13 @@ internal class FirstPass(
             val (contentEnd, attrsParsed) = extractAndParseHeadingAttributeBlock(headerStart, headerEnd)
             attrs = attrsParsed
 
-            val newEnd = if (hasTrailingContent) {
-                contentEnd
-            } else {
-                val trailingWs = scanRevWhile(text, headerStart, contentEnd) { isAsciiWhitespaceNoNl(it) }
-                contentEnd - trailingWs
-            }
+            val newEnd =
+                if (hasTrailingContent) {
+                    contentEnd
+                } else {
+                    val trailingWs = scanRevWhile(text, headerStart, contentEnd) { isAsciiWhitespaceNoNl(it) }
+                    contentEnd - trailingWs
+                }
 
             if (attrs != null) {
                 tree.truncateSiblings(newEnd)
@@ -479,10 +491,11 @@ internal class FirstPass(
             }
         }
 
-        tree[nodeIx].item.body = ItemBody.Heading(
-            level,
-            attrs?.let { allocs.allocateHeading(it) },
-        )
+        tree[nodeIx].item.body =
+            ItemBody.Heading(
+                level,
+                attrs?.let { allocs.allocateHeading(it) },
+            )
 
         return ix + n
     }
@@ -498,48 +511,52 @@ internal class FirstPass(
         var beginText = start
         var backslashEscaped = false
 
-        val (finalIx, brk) = iterateSpecialChars(lookupTable, text, start, textEnd) { ix, c ->
-            when (c) {
-                '\n', '\r' -> {
-                    if (mode == TableParseMode.Active) {
-                        LoopInstruction.BreakAtWith(ix, null)
-                    } else {
-                        var i = ix
-                        val eolBytes = scanEol(text, ix) ?: 1
-                        val endIx = ix + eolBytes
-                        val trailingBackslashes = scanRevWhile(text, 0, ix) { it == '\\' }
-                        if (trailingBackslashes % 2 == 1 && endIx < textEnd) {
-                            i -= 1
-                            tree.appendText(beginText, i, backslashEscaped)
-                            backslashEscaped = false
-                            LoopInstruction.BreakAtWith(
-                                endIx,
-                                Item(
-                                    start = i,
-                                    end = endIx,
-                                    body = ItemBody.HardBreak(true),
-                                ),
-                            )
-                        } else if (mode == TableParseMode.Scan && pipes > 0) {
-                            val nextLineIx = ix + eolBytes
-                            val lineStart = LineStart(text, nextLineIx)
-                            if (scanContainers(tree, lineStart, options.hasGfmFootnotes()) == tree.spineLen()) {
-                                val tableHeadIx = nextLineIx + lineStart.bytesScanned
-                                val (tableHeadBytes, alignment) = scanTableHead(text, tableHeadIx)
+        val (finalIx, brk) =
+            iterateSpecialChars(lookupTable, text, start, textEnd) { ix, c ->
+                when (c) {
+                    '\n', '\r' -> {
+                        if (mode == TableParseMode.Active) {
+                            LoopInstruction.BreakAtWith(ix, null)
+                        } else {
+                            var i = ix
+                            val eolBytes = scanEol(text, ix) ?: 1
+                            val endIx = ix + eolBytes
+                            val trailingBackslashes = scanRevWhile(text, 0, ix) { it == '\\' }
+                            if (trailingBackslashes % 2 == 1 && endIx < textEnd) {
+                                i -= 1
+                                tree.appendText(beginText, i, backslashEscaped)
+                                backslashEscaped = false
+                                LoopInstruction.BreakAtWith(
+                                    endIx,
+                                    Item(
+                                        start = i,
+                                        end = endIx,
+                                        body = ItemBody.HardBreak(true),
+                                    ),
+                                )
+                            } else if (mode == TableParseMode.Scan && pipes > 0) {
+                                val nextLineIx = ix + eolBytes
+                                val lineStart = LineStart(text, nextLineIx)
+                                if (scanContainers(tree, lineStart, options.hasGfmFootnotes()) == tree.spineLen()) {
+                                    val tableHeadIx = nextLineIx + lineStart.bytesScanned
+                                    val (tableHeadBytes, alignment) = scanTableHead(text, tableHeadIx)
 
-                                if (tableHeadBytes > 0) {
-                                    val headerCount = countHeaderCols(text, pipes, start, lastPipeIx)
-                                    if (alignment.size == headerCount) {
-                                        val alignmentIx = allocs.allocateAlignment(alignment)
-                                        val endTableIx = tableHeadIx + tableHeadBytes
-                                        LoopInstruction.BreakAtWith(
-                                            endTableIx,
-                                            Item(
-                                                start = i,
-                                                end = endTableIx,
-                                                body = ItemBody.Table(alignmentIx),
-                                            ),
-                                        )
+                                    if (tableHeadBytes > 0) {
+                                        val headerCount = countHeaderCols(text, pipes, start, lastPipeIx)
+                                        if (alignment.size == headerCount) {
+                                            val alignmentIx = allocs.allocateAlignment(alignment)
+                                            val endTableIx = tableHeadIx + tableHeadBytes
+                                            LoopInstruction.BreakAtWith(
+                                                endTableIx,
+                                                Item(
+                                                    start = i,
+                                                    end = endTableIx,
+                                                    body = ItemBody.Table(alignmentIx),
+                                                ),
+                                            )
+                                        } else {
+                                            emitSoftOrHardBreak(ix, eolBytes, i, beginText, backslashEscaped)
+                                        }
                                     } else {
                                         emitSoftOrHardBreak(ix, eolBytes, i, beginText, backslashEscaped)
                                     }
@@ -549,248 +566,248 @@ internal class FirstPass(
                             } else {
                                 emitSoftOrHardBreak(ix, eolBytes, i, beginText, backslashEscaped)
                             }
-                        } else {
-                            emitSoftOrHardBreak(ix, eolBytes, i, beginText, backslashEscaped)
                         }
                     }
-                }
-                '\\' -> {
-                    if (ix + 1 < textEnd && isAsciiPunctuation(text[ix + 1])) {
-                        tree.appendText(beginText, ix, backslashEscaped)
-                        val nextByte = text[ix + 1]
-                        if (nextByte == '`') {
-                            val count = 1 + scanChRepeat(text, ix + 2, '`')
-                            tree.append(
-                                Item(
-                                    start = ix + 1,
-                                    end = ix + count + 1,
-                                    body = ItemBody.MaybeCode(count, true),
+                    '\\' -> {
+                        if (ix + 1 < textEnd && isAsciiPunctuation(text[ix + 1])) {
+                            tree.appendText(beginText, ix, backslashEscaped)
+                            val nextByte = text[ix + 1]
+                            if (nextByte == '`') {
+                                val count = 1 + scanChRepeat(text, ix + 2, '`')
+                                tree.append(
+                                    Item(
+                                        start = ix + 1,
+                                        end = ix + count + 1,
+                                        body = ItemBody.MaybeCode(count, true),
+                                    ),
                                 )
-                            )
-                            beginText = ix + 1 + count
-                            backslashEscaped = false
-                            LoopInstruction.ContinueAndSkip(count)
-                        } else if (nextByte == '|' && mode == TableParseMode.Active) {
-                            beginText = ix + 1
-                            backslashEscaped = false
-                            LoopInstruction.ContinueAndSkip(1)
-                        } else if (ix + 2 < textEnd && nextByte == '\\' && text[ix + 2] == '|' && mode == TableParseMode.Active) {
-                            beginText = ix + 2
-                            backslashEscaped = true
-                            LoopInstruction.ContinueAndSkip(2)
+                                beginText = ix + 1 + count
+                                backslashEscaped = false
+                                LoopInstruction.ContinueAndSkip(count)
+                            } else if (nextByte == '|' && mode == TableParseMode.Active) {
+                                beginText = ix + 1
+                                backslashEscaped = false
+                                LoopInstruction.ContinueAndSkip(1)
+                            } else if (ix + 2 < textEnd && nextByte == '\\' && text[ix + 2] == '|' && mode == TableParseMode.Active) {
+                                beginText = ix + 2
+                                backslashEscaped = true
+                                LoopInstruction.ContinueAndSkip(2)
+                            } else {
+                                beginText = ix + 1
+                                backslashEscaped = true
+                                LoopInstruction.ContinueAndSkip(1)
+                            }
                         } else {
-                            beginText = ix + 1
-                            backslashEscaped = true
-                            LoopInstruction.ContinueAndSkip(1)
+                            LoopInstruction.ContinueAndSkip(0)
                         }
-                    } else {
-                        LoopInstruction.ContinueAndSkip(0)
                     }
-                }
-                '*', '_', '~' -> {
-                    val count = 1 + scanChRepeat(text, ix + 1, c)
-                    val stringSuffix = text.substring(ix)
-                    val lineSub = text.substring(start)
-                    val canOpen = delimRunCanOpen(lineSub, stringSuffix, count, ix - start, mode)
-                    val canClose = delimRunCanClose(lineSub, stringSuffix, count, ix - start, mode)
-                    val isValidSeq = c != '~' || count <= 2
+                    '*', '_', '~' -> {
+                        val count = 1 + scanChRepeat(text, ix + 1, c)
+                        val stringSuffix = text.substring(ix)
+                        val lineSub = text.substring(start)
+                        val canOpen = delimRunCanOpen(lineSub, stringSuffix, count, ix - start, mode)
+                        val canClose = delimRunCanClose(lineSub, stringSuffix, count, ix - start, mode)
+                        val isValidSeq = c != '~' || count <= 2
 
-                    if ((canOpen || canClose) && isValidSeq) {
+                        if ((canOpen || canClose) && isValidSeq) {
+                            tree.appendText(beginText, ix, backslashEscaped)
+                            backslashEscaped = false
+                            for (k in 0 until count) {
+                                tree.append(
+                                    Item(
+                                        start = ix + k,
+                                        end = ix + k + 1,
+                                        body = ItemBody.MaybeEmphasis(count - k, canOpen, canClose),
+                                    ),
+                                )
+                            }
+                            beginText = ix + count
+                        }
+                        LoopInstruction.ContinueAndSkip(count - 1)
+                    }
+                    '`' -> {
                         tree.appendText(beginText, ix, backslashEscaped)
                         backslashEscaped = false
-                        for (k in 0 until count) {
+                        val count = 1 + scanChRepeat(text, ix + 1, '`')
+                        tree.append(
+                            Item(
+                                start = ix,
+                                end = ix + count,
+                                body = ItemBody.MaybeCode(count, false),
+                            ),
+                        )
+                        beginText = ix + count
+                        LoopInstruction.ContinueAndSkip(count - 1)
+                    }
+                    '<' -> {
+                        if (ix + 1 < text.length && text[ix + 1] == '\\') {
+                            LoopInstruction.ContinueAndSkip(0)
+                        } else {
+                            tree.appendText(beginText, ix, backslashEscaped)
+                            backslashEscaped = false
                             tree.append(
                                 Item(
-                                    start = ix + k,
-                                    end = ix + k + 1,
-                                    body = ItemBody.MaybeEmphasis(count - k, canOpen, canClose),
-                                )
+                                    start = ix,
+                                    end = ix + 1,
+                                    body = ItemBody.MaybeHtml,
+                                ),
                             )
+                            beginText = ix + 1
+                            LoopInstruction.ContinueAndSkip(0)
                         }
-                        beginText = ix + count
                     }
-                    LoopInstruction.ContinueAndSkip(count - 1)
-                }
-                '`' -> {
-                    tree.appendText(beginText, ix, backslashEscaped)
-                    backslashEscaped = false
-                    val count = 1 + scanChRepeat(text, ix + 1, '`')
-                    tree.append(
-                        Item(
-                            start = ix,
-                            end = ix + count,
-                            body = ItemBody.MaybeCode(count, false),
-                        )
-                    )
-                    beginText = ix + count
-                    LoopInstruction.ContinueAndSkip(count - 1)
-                }
-                '<' -> {
-                    if (ix + 1 < text.length && text[ix + 1] == '\\') {
-                        LoopInstruction.ContinueAndSkip(0)
-                    } else {
+                    '!' -> {
+                        if (ix + 1 < textEnd && text[ix + 1] == '[') {
+                            tree.appendText(beginText, ix, backslashEscaped)
+                            backslashEscaped = false
+                            tree.append(
+                                Item(
+                                    start = ix,
+                                    end = ix + 2,
+                                    body = ItemBody.MaybeImage,
+                                ),
+                            )
+                            beginText = ix + 2
+                            LoopInstruction.ContinueAndSkip(1)
+                        } else {
+                            LoopInstruction.ContinueAndSkip(0)
+                        }
+                    }
+                    '[' -> {
                         tree.appendText(beginText, ix, backslashEscaped)
                         backslashEscaped = false
                         tree.append(
                             Item(
                                 start = ix,
                                 end = ix + 1,
-                                body = ItemBody.MaybeHtml,
-                            )
+                                body = ItemBody.MaybeLinkOpen,
+                            ),
                         )
                         beginText = ix + 1
                         LoopInstruction.ContinueAndSkip(0)
                     }
-                }
-                '!' -> {
-                    if (ix + 1 < textEnd && text[ix + 1] == '[') {
+                    ']' -> {
                         tree.appendText(beginText, ix, backslashEscaped)
                         backslashEscaped = false
                         tree.append(
                             Item(
                                 start = ix,
-                                end = ix + 2,
-                                body = ItemBody.MaybeImage,
+                                end = ix + 1,
+                                body = ItemBody.MaybeLinkClose(true),
+                            ),
+                        )
+                        beginText = ix + 1
+                        LoopInstruction.ContinueAndSkip(0)
+                    }
+                    '&' -> {
+                        val (entityBytes, entityVal) = scanEntity(text, ix)
+                        if (entityVal != null) {
+                            tree.appendText(beginText, ix, backslashEscaped)
+                            backslashEscaped = false
+                            tree.append(
+                                Item(
+                                    start = ix,
+                                    end = ix + entityBytes,
+                                    body = ItemBody.SynthesizeText(allocs.allocateCow(CowStr.from(entityVal))),
+                                ),
                             )
-                        )
-                        beginText = ix + 2
-                        LoopInstruction.ContinueAndSkip(1)
-                    } else {
-                        LoopInstruction.ContinueAndSkip(0)
-                    }
-                }
-                '[' -> {
-                    tree.appendText(beginText, ix, backslashEscaped)
-                    backslashEscaped = false
-                    tree.append(
-                        Item(
-                            start = ix,
-                            end = ix + 1,
-                            body = ItemBody.MaybeLinkOpen,
-                        )
-                    )
-                    beginText = ix + 1
-                    LoopInstruction.ContinueAndSkip(0)
-                }
-                ']' -> {
-                    tree.appendText(beginText, ix, backslashEscaped)
-                    backslashEscaped = false
-                    tree.append(
-                        Item(
-                            start = ix,
-                            end = ix + 1,
-                            body = ItemBody.MaybeLinkClose(true),
-                        )
-                    )
-                    beginText = ix + 1
-                    LoopInstruction.ContinueAndSkip(0)
-                }
-                '&' -> {
-                    val (entityBytes, entityVal) = scanEntity(text, ix)
-                    if (entityVal != null) {
-                        tree.appendText(beginText, ix, backslashEscaped)
-                        backslashEscaped = false
-                        tree.append(
-                            Item(
-                                start = ix,
-                                end = ix + entityBytes,
-                                body = ItemBody.SynthesizeText(allocs.allocateCow(CowStr.from(entityVal))),
-                            )
-                        )
-                        beginText = ix + entityBytes
-                        LoopInstruction.ContinueAndSkip(entityBytes - 1)
-                    } else {
-                        LoopInstruction.ContinueAndSkip(0)
-                    }
-                }
-                '|' -> {
-                    if (ix != 0 && text[ix - 1] == '\\') {
-                        LoopInstruction.ContinueAndSkip(0)
-                    } else if (mode == TableParseMode.Active) {
-                        LoopInstruction.BreakAtWith(ix, null)
-                    } else {
-                        lastPipeIx = ix
-                        pipes += 1
-                        LoopInstruction.ContinueAndSkip(0)
-                    }
-                }
-                '.' -> {
-                    if (ix + 2 < text.length && text[ix + 1] == '.' && text[ix + 2] == '.') {
-                        tree.appendText(beginText, ix, backslashEscaped)
-                        backslashEscaped = false
-                        tree.append(
-                            Item(
-                                start = ix,
-                                end = ix + 3,
-                                body = ItemBody.SynthesizeChar('…'),
-                            )
-                        )
-                        beginText = ix + 3
-                        LoopInstruction.ContinueAndSkip(2)
-                    } else {
-                        LoopInstruction.ContinueAndSkip(0)
-                    }
-                }
-                '-' -> {
-                    val count = 1 + scanChRepeat(text, ix + 1, '-')
-                    if (count == 1) {
-                        LoopInstruction.ContinueAndSkip(0)
-                    } else {
-                        val itembody = when (count) {
-                            2 -> ItemBody.SynthesizeChar('–')
-                            3 -> ItemBody.SynthesizeChar('—')
-                            else -> {
-                                val ems = when (count % 6) {
-                                    0, 3 -> count / 3
-                                    1 -> count / 3 - 1
-                                    else -> count / 3
-                                }
-                                val ens = when (count % 6) {
-                                    0, 3 -> 0
-                                    2, 4 -> count / 2
-                                    1 -> 2
-                                    else -> 1
-                                }
-                                val buf = StringBuilder()
-                                for (k in 0 until ems) buf.append('—')
-                                for (k in 0 until ens) buf.append('–')
-                                ItemBody.SynthesizeText(allocs.allocateCow(CowStr.from(buf.toString())))
-                            }
+                            beginText = ix + entityBytes
+                            LoopInstruction.ContinueAndSkip(entityBytes - 1)
+                        } else {
+                            LoopInstruction.ContinueAndSkip(0)
                         }
+                    }
+                    '|' -> {
+                        if (ix != 0 && text[ix - 1] == '\\') {
+                            LoopInstruction.ContinueAndSkip(0)
+                        } else if (mode == TableParseMode.Active) {
+                            LoopInstruction.BreakAtWith(ix, null)
+                        } else {
+                            lastPipeIx = ix
+                            pipes += 1
+                            LoopInstruction.ContinueAndSkip(0)
+                        }
+                    }
+                    '.' -> {
+                        if (ix + 2 < text.length && text[ix + 1] == '.' && text[ix + 2] == '.') {
+                            tree.appendText(beginText, ix, backslashEscaped)
+                            backslashEscaped = false
+                            tree.append(
+                                Item(
+                                    start = ix,
+                                    end = ix + 3,
+                                    body = ItemBody.SynthesizeChar('…'),
+                                ),
+                            )
+                            beginText = ix + 3
+                            LoopInstruction.ContinueAndSkip(2)
+                        } else {
+                            LoopInstruction.ContinueAndSkip(0)
+                        }
+                    }
+                    '-' -> {
+                        val count = 1 + scanChRepeat(text, ix + 1, '-')
+                        if (count == 1) {
+                            LoopInstruction.ContinueAndSkip(0)
+                        } else {
+                            val itembody =
+                                when (count) {
+                                    2 -> ItemBody.SynthesizeChar('–')
+                                    3 -> ItemBody.SynthesizeChar('—')
+                                    else -> {
+                                        val ems =
+                                            when (count % 6) {
+                                                0, 3 -> count / 3
+                                                1 -> count / 3 - 1
+                                                else -> count / 3
+                                            }
+                                        val ens =
+                                            when (count % 6) {
+                                                0, 3 -> 0
+                                                2, 4 -> count / 2
+                                                1 -> 2
+                                                else -> 1
+                                            }
+                                        val buf = StringBuilder()
+                                        for (k in 0 until ems) buf.append('—')
+                                        for (k in 0 until ens) buf.append('–')
+                                        ItemBody.SynthesizeText(allocs.allocateCow(CowStr.from(buf.toString())))
+                                    }
+                                }
+                            tree.appendText(beginText, ix, backslashEscaped)
+                            backslashEscaped = false
+                            tree.append(
+                                Item(
+                                    start = ix,
+                                    end = ix + count,
+                                    body = itembody,
+                                ),
+                            )
+                            beginText = ix + count
+                            LoopInstruction.ContinueAndSkip(count - 1)
+                        }
+                    }
+                    '\'', '"' -> {
+                        val stringSuffix = text.substring(ix)
+                        val lineSub = text.substring(start)
+                        val canOpen = delimRunCanOpen(lineSub, stringSuffix, 1, ix - start, mode)
+                        val canClose = delimRunCanClose(lineSub, stringSuffix, 1, ix - start, mode)
+
                         tree.appendText(beginText, ix, backslashEscaped)
                         backslashEscaped = false
                         tree.append(
                             Item(
                                 start = ix,
-                                end = ix + count,
-                                body = itembody,
-                            )
+                                end = ix + 1,
+                                body = ItemBody.MaybeSmartQuote(c, canOpen, canClose),
+                            ),
                         )
-                        beginText = ix + count
-                        LoopInstruction.ContinueAndSkip(count - 1)
+                        beginText = ix + 1
+                        LoopInstruction.ContinueAndSkip(0)
                     }
+                    else -> LoopInstruction.ContinueAndSkip(0)
                 }
-                '\'', '"' -> {
-                    val stringSuffix = text.substring(ix)
-                    val lineSub = text.substring(start)
-                    val canOpen = delimRunCanOpen(lineSub, stringSuffix, 1, ix - start, mode)
-                    val canClose = delimRunCanClose(lineSub, stringSuffix, 1, ix - start, mode)
-
-                    tree.appendText(beginText, ix, backslashEscaped)
-                    backslashEscaped = false
-                    tree.append(
-                        Item(
-                            start = ix,
-                            end = ix + 1,
-                            body = ItemBody.MaybeSmartQuote(c, canOpen, canClose),
-                        )
-                    )
-                    beginText = ix + 1
-                    LoopInstruction.ContinueAndSkip(0)
-                }
-                else -> LoopInstruction.ContinueAndSkip(0)
             }
-        }
 
         if (brk == null) {
             val trailingWhitespace = scanRevWhile(text, beginText, finalIx) { isAsciiWhitespaceNoNl(it) }
@@ -847,7 +864,7 @@ internal class FirstPass(
                 start = startIx,
                 end = 0,
                 body = ItemBody.HtmlBlock,
-            )
+            ),
         )
         tree.push()
 
@@ -895,7 +912,7 @@ internal class FirstPass(
                 start = startIx,
                 end = 0,
                 body = ItemBody.HtmlBlock,
-            )
+            ),
         )
         tree.push()
 
@@ -933,7 +950,7 @@ internal class FirstPass(
                 start = startIx,
                 end = 0,
                 body = ItemBody.IndentCodeBlock,
-            )
+            ),
         )
         tree.push()
         var lastNonblankChild: TreeIndex? = null
@@ -991,7 +1008,7 @@ internal class FirstPass(
                 start = startIx,
                 end = 0,
                 body = ItemBody.FencedCodeBlock(allocs.allocateCow(CowStr.from(infoString))),
-            )
+            ),
         )
         tree.push()
         while (true) {
@@ -1028,18 +1045,19 @@ internal class FirstPass(
         if (indent > 0) {
             return 0
         }
-        val metadataBlockKind = when (metadataBlockCh) {
-            '-' -> MetadataBlockKind.YamlStyle
-            '+' -> MetadataBlockKind.PlusesStyle
-            else -> error("Erroneous metadata block character")
-        }
+        val metadataBlockKind =
+            when (metadataBlockCh) {
+                '-' -> MetadataBlockKind.YamlStyle
+                '+' -> MetadataBlockKind.PlusesStyle
+                else -> error("Erroneous metadata block character")
+            }
         var ix = startIx + 3 + scanNextLine(text, startIx + 3)
         tree.append(
             Item(
                 start = startIx,
                 end = 0,
                 body = ItemBody.MetadataBlock(metadataBlockKind),
-            )
+            ),
         )
         tree.push()
         while (true) {
@@ -1076,7 +1094,7 @@ internal class FirstPass(
                     start = start,
                     end = start,
                     body = ItemBody.SynthesizeText(cowIx),
-                )
+                ),
             )
         }
         if (end >= 2 && text[end - 2] == '\r') {
@@ -1096,7 +1114,7 @@ internal class FirstPass(
                     start = start,
                     end = start,
                     body = ItemBody.SynthesizeText(cowIx),
-                )
+                ),
             )
         }
         if (end >= 2 && text[end - 2] == '\r') {
@@ -1164,7 +1182,7 @@ internal class FirstPass(
                 start = start,
                 end = 0,
                 body = ItemBody.List(true, ch, index),
-            )
+            ),
         )
         tree.push()
         lastLineBlank = false
@@ -1176,20 +1194,21 @@ internal class FirstPass(
                 start = ix,
                 end = ix + hruleSize,
                 body = ItemBody.Rule,
-            )
+            ),
         )
         return ix + hruleSize
     }
 
     private fun parseAtxHeading(start: Int, atxLevel: HeadingLevel): Int {
         var ix = start
-        val headingIx = tree.append(
-            Item(
-                start = start,
-                end = 0,
-                body = ItemBody.Root,
+        val headingIx =
+            tree.append(
+                Item(
+                    start = start,
+                    end = 0,
+                    body = ItemBody.Root,
+                ),
             )
-        )
         ix += atxLevel.level
         val eolBytes = scanEol(text, ix)
         if (eolBytes != null) {
@@ -1203,19 +1222,20 @@ internal class FirstPass(
         val headerStart = ix
         val headerNodeIdx = tree.push()
 
-        val (end, contentEnd, attrs) = if (options.contains(Options.ENABLE_HEADING_ATTRIBUTES)) {
-            val headerEnd = headerStart + scanNextLine(text, headerStart)
-            val (cEnd, attrsParsed) = extractAndParseHeadingAttributeBlock(headerStart, headerEnd)
-            parseLine(ix, cEnd, TableParseMode.Disabled)
-            Triple(headerEnd, cEnd, attrsParsed)
-        } else {
-            val (lineIx, lineBrk) = parseLine(ix, null, TableParseMode.Disabled)
-            ix = lineIx
-            if (lineBrk != null && lineBrk.body is ItemBody.HardBreak && (lineBrk.body as ItemBody.HardBreak).isBackslash) {
-                tree.appendText(lineBrk.start, lineBrk.end, false)
+        val (end, contentEnd, attrs) =
+            if (options.contains(Options.ENABLE_HEADING_ATTRIBUTES)) {
+                val headerEnd = headerStart + scanNextLine(text, headerStart)
+                val (cEnd, attrsParsed) = extractAndParseHeadingAttributeBlock(headerStart, headerEnd)
+                parseLine(ix, cEnd, TableParseMode.Disabled)
+                Triple(headerEnd, cEnd, attrsParsed)
+            } else {
+                val (lineIx, lineBrk) = parseLine(ix, null, TableParseMode.Disabled)
+                ix = lineIx
+                if (lineBrk != null && lineBrk.body is ItemBody.HardBreak && (lineBrk.body as ItemBody.HardBreak).isBackslash) {
+                    tree.appendText(lineBrk.start, lineBrk.end, false)
+                }
+                Triple(ix, ix, null)
             }
-            Triple(ix, ix, null)
-        }
         tree[headerNodeIdx].item.end = end
 
         var emptyTextNode = false
@@ -1255,10 +1275,11 @@ internal class FirstPass(
         } else {
             tree.pop()
         }
-        tree[headingIx].item.body = ItemBody.Heading(
-            atxLevel,
-            attrs?.let { allocs.allocateHeading(it) },
-        )
+        tree[headingIx].item.body =
+            ItemBody.Heading(
+                atxLevel,
+                attrs?.let { allocs.allocateHeading(it) },
+            )
 
         return end
     }
@@ -1267,11 +1288,12 @@ internal class FirstPass(
         if (start + 1 >= text.length || text[start] != '[' || text[start + 1] != '^') {
             return null
         }
-        val labelRes: Pair<Int, CowStr>? = if (options.hasGfmFootnotes()) {
-            scanLinkLabelRest(text.substring(start + 2), { null }, tree.isInTable())
-        } else {
-            parseRefdefLabel(start + 2)
-        }
+        val labelRes: Pair<Int, CowStr>? =
+            if (options.hasGfmFootnotes()) {
+                scanLinkLabelRest(text.substring(start + 2), { null }, tree.isInTable())
+            } else {
+                parseRefdefLabel(start + 2)
+            }
         val (labelLen, label) = labelRes ?: return null
         if (options.hasGfmFootnotes() && (label.asString().contains('\r') || label.asString().contains('\n'))) {
             return null
@@ -1295,14 +1317,14 @@ internal class FirstPass(
                 start = start,
                 end = 0,
                 body = ItemBody.FootnoteDefinition(allocs.allocateCow(label)),
-            )
+            ),
         )
         tree.push()
         return i
     }
 
-    private fun parseRefdefLabel(start: Int): Pair<Int, CowStr>? {
-        return scanLinkLabelRest(
+    private fun parseRefdefLabel(start: Int): Pair<Int, CowStr>? =
+        scanLinkLabelRest(
             text.substring(start),
             { b ->
                 val lineStart = LineStart(b, 0)
@@ -1322,7 +1344,6 @@ internal class FirstPass(
             },
             tree.isInTable(),
         )
-    }
 
     private fun parseRefdefTotal(start: Int): Triple<Int, UniCase, LinkDef>? {
         if (scanCh(text, start, '[') == 0) {
@@ -1372,12 +1393,13 @@ internal class FirstPass(
     private fun scanRefdefTitle(textSub: String): Pair<Int, CowStr>? {
         if (textSub.isEmpty()) return null
         val firstChar = textSub[0]
-        val closingDelim = when (firstChar) {
-            '\'' -> '\''
-            '"' -> '"'
-            '(' -> ')'
-            else -> return null
-        }
+        val closingDelim =
+            when (firstChar) {
+                '\'' -> '\''
+                '"' -> '"'
+                '(' -> ')'
+                else -> return null
+            }
         var bytecount = 1
         var linestart = 1
         var linebuf: StringBuilder? = null
@@ -1421,12 +1443,13 @@ internal class FirstPass(
                     }
                 }
                 c == closingDelim -> {
-                    val cow = if (linebuf != null) {
-                        linebuf.append(textSub.substring(linestart, bytecount))
-                        CowStr.from(linebuf.toString())
-                    } else {
-                        CowStr.from(textSub.substring(linestart, bytecount))
-                    }
+                    val cow =
+                        if (linebuf != null) {
+                            linebuf.append(textSub.substring(linestart, bytecount))
+                            CowStr.from(linebuf.toString())
+                        } else {
+                            CowStr.from(textSub.substring(linestart, bytecount))
+                        }
                     return Pair(bytecount + 1, cow)
                 }
                 else -> bytecount += 1
@@ -1445,14 +1468,15 @@ internal class FirstPass(
         val destUnescaped = unescape(dest, tree.isInTable())
         i += destLength
 
-        var backup = Pair(
-            i - start,
-            LinkDef(
-                dest = CowStr.from(destUnescaped),
-                title = null,
-                span = spanStart until i,
+        var backup =
+            Pair(
+                i - start,
+                LinkDef(
+                    dest = CowStr.from(destUnescaped),
+                    title = null,
+                    span = spanStart until i,
+                ),
             )
-        )
 
         val nextSpaceRes = scanRefdefSpace(i)
         val newlines: Int
@@ -1474,14 +1498,15 @@ internal class FirstPass(
                 val (titleLength, title) = titleRes
                 i += titleLength
                 if (scanBlankLine(text, i) != null) {
-                    backup = Pair(
-                        i - start,
-                        LinkDef(
-                            dest = CowStr.from(destUnescaped),
-                            title = CowStr.from(unescape(title.asString(), tree.isInTable())),
-                            span = spanStart until i,
+                    backup =
+                        Pair(
+                            i - start,
+                            LinkDef(
+                                dest = CowStr.from(destUnescaped),
+                                title = CowStr.from(unescape(title.asString(), tree.isInTable())),
+                                span = spanStart until i,
+                            ),
                         )
-                    )
                     return backup
                 }
             }
@@ -1490,9 +1515,7 @@ internal class FirstPass(
         return if (newlines > 0) backup else null
     }
 
-    private fun scanParagraphInterrupt(offset: Int, currentContainer: Boolean): Boolean {
-        return scanParagraphInterrupt(text, offset, currentContainer)
-    }
+    private fun scanParagraphInterrupt(offset: Int, currentContainer: Boolean): Boolean = scanParagraphInterrupt(text, offset, currentContainer)
 
     private fun scanParagraphInterrupt(textParam: String, offset: Int, currentContainer: Boolean): Boolean {
         val gfmFootnote = options.hasGfmFootnotes()
@@ -1553,12 +1576,13 @@ internal class FirstPass(
         val headerText = text.substring(headerStart, headerEnd)
         val (contentLen, attrRange) = extractAttributeBlockContentFromHeaderText(headerText)
         val contentEnd = headerStart + contentLen
-        val attrs = if (attrRange != null) {
-            val sub = text.substring(headerStart + attrRange.first, headerStart + attrRange.last + 1)
-            parseInsideAttributeBlock(sub)
-        } else {
-            null
-        }
+        val attrs =
+            if (attrRange != null) {
+                val sub = text.substring(headerStart + attrRange.first, headerStart + attrRange.last + 1)
+                parseInsideAttributeBlock(sub)
+            } else {
+                null
+            }
         return Pair(contentEnd, attrs)
     }
 }
@@ -1605,9 +1629,13 @@ internal fun scanParagraphInterruptNoTable(
     val listitem = scanListItem(text, offset)
     if (listitem != null) {
         val (ix, delim, index, _) = listitem
-        val allowed = !currentContainer || tree.isInTable() ||
-            ((delim == '*' || delim == '-' || delim == '+' || index == 1L) &&
-                scanBlankLine(text, offset + ix) == null)
+        val allowed =
+            !currentContainer ||
+                tree.isInTable() ||
+                (
+                    (delim == '*' || delim == '-' || delim == '+' || index == 1L) &&
+                        scanBlankLine(text, offset + ix) == null
+                )
         if (allowed) return true
     }
 
@@ -1690,25 +1718,26 @@ internal fun surgerizeTightList(tree: Tree<Item>, listIx: TreeIndex) {
             var nodeToRepoint: TreeIndex? = null
             while (listItemChild != null) {
                 val childIx = listItemChild
-                val repointIx = if (tree[childIx].item.body is ItemBody.Paragraph) {
-                    val childFirstborn = tree[childIx].child
-                    if (childFirstborn != null) {
-                        if (nodeToRepoint != null) {
-                            tree[nodeToRepoint].next = childFirstborn
+                val repointIx =
+                    if (tree[childIx].item.body is ItemBody.Paragraph) {
+                        val childFirstborn = tree[childIx].child
+                        if (childFirstborn != null) {
+                            if (nodeToRepoint != null) {
+                                tree[nodeToRepoint].next = childFirstborn
+                            }
+                            var childLastborn = childFirstborn
+                            var nextNode = tree[childLastborn].next
+                            while (nextNode != null) {
+                                childLastborn = nextNode
+                                nextNode = tree[childLastborn].next
+                            }
+                            childLastborn
+                        } else {
+                            childIx
                         }
-                        var childLastborn = childFirstborn
-                        var nextNode = tree[childLastborn].next
-                        while (nextNode != null) {
-                            childLastborn = nextNode
-                            nextNode = tree[childLastborn].next
-                        }
-                        childLastborn
                     } else {
                         childIx
                     }
-                } else {
-                    childIx
-                }
 
                 nodeToRepoint = repointIx
                 tree[repointIx].next = tree[childIx].next
@@ -1769,9 +1798,7 @@ internal fun delimRunCanClose(
     return nextChar.isWhitespace() || isPunctuation(nextChar)
 }
 
-internal fun createLut(options: Options): BooleanArray {
-    return specialBytes(options)
-}
+internal fun createLut(options: Options): BooleanArray = specialBytes(options)
 
 internal fun specialBytes(options: Options): BooleanArray {
     val bytes = BooleanArray(256)
@@ -1795,8 +1822,14 @@ internal fun specialBytes(options: Options): BooleanArray {
 }
 
 internal sealed class LoopInstruction<out T> {
-    data class ContinueAndSkip(val skip: Int) : LoopInstruction<Nothing>()
-    data class BreakAtWith<T>(val ix: Int, val value: T) : LoopInstruction<T>()
+    data class ContinueAndSkip(
+        val skip: Int,
+    ) : LoopInstruction<Nothing>()
+
+    data class BreakAtWith<T>(
+        val ix: Int,
+        val value: T,
+    ) : LoopInstruction<T>()
 }
 
 internal fun iterateSpecialChars(
@@ -1834,18 +1867,20 @@ internal inline fun scanRevWhile(text: String, minIx: Int, startIx: Int, predica
 internal fun extractAttributeBlockContentFromHeaderText(heading: String): Pair<Int, IntRange?> {
     val headingLen = heading.length
     var ix = headingLen
-    ix -= scanRevWhile(heading, 0, headingLen) { c ->
-        c == '\n' || c == '\r' || c == ' ' || c == '\t'
-    }
+    ix -=
+        scanRevWhile(heading, 0, headingLen) { c ->
+            c == '\n' || c == '\r' || c == ' ' || c == '\t'
+        }
     if (ix == 0) return Pair(headingLen, null)
 
     val attrBlockClose = ix - 1
     if (heading[attrBlockClose] != '}') return Pair(headingLen, null)
     ix -= 1
 
-    ix -= scanRevWhile(heading, 0, ix) { c ->
-        c != '{' && c != '}' && c != '<' && c != '>' && c != '\\' && c != '\n' && c != '\r'
-    }
+    ix -=
+        scanRevWhile(heading, 0, ix) { c ->
+            c != '{' && c != '}' && c != '<' && c != '>' && c != '\\' && c != '\n' && c != '\r'
+        }
     if (ix == 0) return Pair(headingLen, null)
     val attrBlockOpen = ix - 1
     if (heading[attrBlockOpen] != '{') return Pair(headingLen, null)
