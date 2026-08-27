@@ -1,4 +1,4 @@
-// port-lint: source pulldown-cmark/src/tree.rs
+// port-lint: source tree.rs
 package io.github.kotlinmania.pulldowncmark
 
 import kotlin.jvm.JvmInline

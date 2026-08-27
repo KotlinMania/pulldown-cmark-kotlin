@@ -1,4 +1,4 @@
-// port-lint: source pulldown-cmark/src/parse.rs
+// port-lint: source parse.rs
 package io.github.kotlinmania.pulldowncmark
 
 import kotlin.math.max
