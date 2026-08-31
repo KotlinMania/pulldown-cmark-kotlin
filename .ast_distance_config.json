@@ -2,7 +2,7 @@
   "type": "port",
   "name": "pulldown-cmark-kotlin",
   "source": {
-    "path": "tmp/pulldown-cmark/src",
+    "path": "tmp",
     "lang": "rust"
   },
   "target": {
