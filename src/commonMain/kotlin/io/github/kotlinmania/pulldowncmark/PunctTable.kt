@@ -1,4 +1,4 @@
-// port-lint: source puncttable.rs
+// port-lint: source pulldown-cmark/src/puncttable.rs
 package io.github.kotlinmania.pulldowncmark
 
 /**

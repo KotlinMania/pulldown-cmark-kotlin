@@ -1,4 +1,4 @@
-// port-lint: source entities.rs
+// port-lint: source pulldown-cmark/src/entities.rs
 package io.github.kotlinmania.pulldowncmark
 
 /**
