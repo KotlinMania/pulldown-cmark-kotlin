@@ -1,11 +1,23 @@
 # port-lint Proposed Changes
 
 **Generated:** 2026-08-31
-**Source:** tmp
+**Source:** tmp/pulldown-cmark/src
 **Target:** src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark
 
 These are review proposals only. They are emitted when a Rust -> Kotlin pair matches only after fallback normalization, so the existing `port-lint` header is not an exact provenance match.
 
 | Target file | Current header | Proposed header | Source path | Reason |
 |-------------|----------------|-----------------|-------------|--------|
-| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Escape.kt` | `// port-lint: source pulldown-cmark/src/html.rs` | `// port-lint: source pulldown-cmark/tests/html.rs` | `pulldown-cmark/tests/html.rs` | `port-lint provenance header matched only by basename: 'pulldown-cmark/src/html.rs' vs expected 'pulldown-cmark/tests/html.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Parse.kt` | `// port-lint: source pulldown-cmark/src/parse.rs` | `// port-lint: source parse.rs` | `parse.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/parse.rs' vs expected 'parse.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Strings.kt` | `// port-lint: source pulldown-cmark/src/strings.rs` | `// port-lint: source strings.rs` | `strings.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/strings.rs' vs expected 'strings.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/FirstPass.kt` | `// port-lint: source pulldown-cmark/src/firstpass.rs` | `// port-lint: source firstpass.rs` | `firstpass.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/firstpass.rs' vs expected 'firstpass.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Scanners.kt` | `// port-lint: source pulldown-cmark/src/scanners.rs` | `// port-lint: source scanners.rs` | `scanners.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/scanners.rs' vs expected 'scanners.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Tree.kt` | `// port-lint: source pulldown-cmark/src/tree.rs` | `// port-lint: source tree.rs` | `tree.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/tree.rs' vs expected 'tree.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Lib.kt` | `// port-lint: source pulldown-cmark/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/lib.rs' vs expected 'lib.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Html.kt` | `// port-lint: source pulldown-cmark/src/html.rs` | `// port-lint: source html.rs` | `html.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/html.rs' vs expected 'html.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Escape.kt` | `// port-lint: source pulldown-cmark/src/html.rs` | `// port-lint: source html.rs` | `html.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/html.rs' vs expected 'html.rs'` |
+| `src/commonTest/kotlin/io/github/kotlinmania/pulldowncmark/PulldownCmarkTest.kt` | `// port-lint: tests pulldown-cmark/tests/html.rs` | `// port-lint: tests html.rs` | `html.rs` | `port-lint provenance header matched only by basename: 'tests:pulldown-cmark/tests/html.rs' vs expected 'html.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/LinkLabel.kt` | `// port-lint: source pulldown-cmark/src/linklabel.rs` | `// port-lint: source linklabel.rs` | `linklabel.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/linklabel.rs' vs expected 'linklabel.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/PunctTable.kt` | `// port-lint: source pulldown-cmark/src/puncttable.rs` | `// port-lint: source puncttable.rs` | `puncttable.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/puncttable.rs' vs expected 'puncttable.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Utils.kt` | `// port-lint: source pulldown-cmark/src/utils.rs` | `// port-lint: source utils.rs` | `utils.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/utils.rs' vs expected 'utils.rs'` |
+| `src/commonMain/kotlin/io/github/kotlinmania/pulldowncmark/Entities.kt` | `// port-lint: source pulldown-cmark/src/entities.rs` | `// port-lint: source entities.rs` | `entities.rs` | `port-lint provenance header matched only after fallback normalization: 'pulldown-cmark/src/entities.rs' vs expected 'entities.rs'` |
