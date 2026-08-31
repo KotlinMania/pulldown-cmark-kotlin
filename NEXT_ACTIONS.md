@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 11/12 (91.7%)
-- **Function parity:** 179/288 matched (target 274) — 62.2%
-- **Class/type parity:** 46/60 matched (target 135) — 76.7%
-- **Combined symbol parity:** 225/348 matched (target 409) — 64.7%
-- **Average inline-code cosine:** 0.38 (function body across 11 matched files)
+- **Files Present:** 12/40 (30.0%)
+- **Function parity:** 179/1364 matched (target 274) — 13.1%
+- **Class/type parity:** 46/63 matched (target 135) — 73.0%
+- **Combined symbol parity:** 225/1427 matched (target 409) — 15.8%
+- **Average inline-code cosine:** 0.34 (function body across 11 matched files)
 - **Average documentation cosine:** 0.40 (doc text across 11 matched files)
-- **Cheat-zeroed Files:** 1
-- **Critical Issues:** 9 files with <0.60 function similarity
+- **Cheat-zeroed Files:** 2
+- **Critical Issues:** 10 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -27,7 +27,7 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. parse
+### 1. pulldown-cmark.parse
 
 - **Target:** `pulldowncmark.Parse`
 - **Similarity:** 0.43
@@ -39,7 +39,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `BrokenLink`, `Output`, `HtmlScanGuard`, `BrokenLinkCallback`, `DefaultBrokenLinkCallback`
 - **Tests:** 0/35 matched
 
-### 2. strings
+### 2. pulldown-cmark.strings
 
 - **Target:** `pulldowncmark.Strings`
 - **Similarity:** 0.09
@@ -51,7 +51,22 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `StringTooLongError`, `Error`, `Target`, `CowStrVisitor`, `Value`
 - **Tests:** 0/12 matched
 
-### 3. firstpass
+### 3. tests.html
+
+- **Target:** `pulldowncmark.Escape [PROVENANCE-FALLBACK]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 202010.0
+- **Functions:** 0/20 matched (target 29)
+- **Missing functions:** `html_test_1`, `html_test_2`, `html_test_3`, `html_test_4`, `html_test_5`, `html_test_6`, `html_test_7`, `html_test_8`, `html_test_9`, `html_test_10`, `html_test_11`, `html_test_broken_callback`, `newline_in_code`, `newline_start_end_of_code`, `trim_space_and_tab_at_end_of_paragraph`, `newline_within_code`, `trim_space_tab_nl_at_end_of_paragraph`, `trim_space_nl_at_end_of_paragraph`, `trim_space_before_soft_break`, `issue_819`
+- **Types:** 0/0 matched (target 1)
+- **Missing types:** _none_
+- **Tests:** 0/20 matched
+- **Provenance warning:** port-lint provenance header matched only by basename: `pulldown-cmark/src/html.rs` vs expected `pulldown-cmark/tests/html.rs`
+- **Proposed provenance header:** `// port-lint: source pulldown-cmark/tests/html.rs` (current: `// port-lint: source pulldown-cmark/src/html.rs`)
+- **Lint issues:** 1
+
+### 4. pulldown-cmark.firstpass
 
 - **Target:** `pulldowncmark.FirstPass`
 - **Similarity:** 0.60
@@ -63,7 +78,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LookupTable`
 - **Tests:** 0/7 matched
 
-### 4. scanners
+### 5. pulldown-cmark.scanners
 
 - **Target:** `pulldowncmark.Scanners [ZERO]`
 - **Similarity:** 0.00
@@ -75,7 +90,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/4 matched
 
-### 5. tree
+### 6. pulldown-cmark.tree
 
 - **Target:** `pulldowncmark.Tree`
 - **Similarity:** 0.45
@@ -86,29 +101,29 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/4 matched (target 3)
 - **Missing types:** `Output`
 
-### 6. lib
+### 7. pulldown-cmark.lib
 
-- **Target:** `pulldowncmark.Lib`
-- **Similarity:** 0.48
+- **Target:** `pulldowncmark.Lib [STUB]`
+- **Similarity:** 0.00
 - **Dependents:** 0
-- **Priority Score:** 31805.2
+- **Priority Score:** 31810.0
 - **Functions:** 6/8 matched (target 15)
 - **Missing functions:** `fmt`, `try_from`
 - **Types:** 9/10 matched (target 44)
 - **Missing types:** `Error`
 
-### 7. html
+### 8. pulldown-cmark.html
 
 - **Target:** `pulldowncmark.Html`
 - **Similarity:** 0.54
 - **Dependents:** 0
 - **Priority Score:** 21104.6
-- **Functions:** 7/9 matched (target 37)
+- **Functions:** 7/9 matched (target 8)
 - **Missing functions:** `new`, `write_html`
-- **Types:** 2/2 matched (target 3)
+- **Types:** 2/2 matched
 - **Missing types:** _none_
 
-### 8. linklabel
+### 9. pulldown-cmark.linklabel
 
 - **Target:** `pulldowncmark.LinkLabel`
 - **Similarity:** 0.29
@@ -120,7 +135,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/2 matched
 
-### 9. puncttable
+### 10. pulldown-cmark.puncttable
 
 - **Target:** `pulldowncmark.PunctTable`
 - **Similarity:** 0.32
@@ -132,7 +147,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/2 matched
 
-### 10. utils
+### 11. pulldown-cmark.utils
 
 - **Target:** `pulldowncmark.Utils`
 - **Similarity:** 0.62
@@ -143,7 +158,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/3 matched (target 2)
 - **Missing types:** `Item`
 
-### 11. entities
+### 12. pulldown-cmark.entities
 
 - **Target:** `pulldowncmark.Entities`
 - **Similarity:** 0.40
