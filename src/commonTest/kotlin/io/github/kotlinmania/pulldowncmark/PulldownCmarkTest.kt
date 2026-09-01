@@ -1,4 +1,4 @@
-// port-lint: tests pulldown-cmark/tests/html.rs
+// port-lint: tests tests/html.rs
 package io.github.kotlinmania.pulldowncmark
 
 import kotlin.test.Test
