@@ -1,4 +1,4 @@
-// port-lint: source pulldown-cmark/src/firstpass.rs
+// port-lint: source firstpass.rs
 package io.github.kotlinmania.pulldowncmark
 
 import kotlin.math.max

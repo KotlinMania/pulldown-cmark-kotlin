@@ -1,4 +1,4 @@
-// port-lint: source pulldown-cmark/src/scanners.rs
+// port-lint: source scanners.rs
 package io.github.kotlinmania.pulldowncmark
 
 internal class HtmlScanGuard(
