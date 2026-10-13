@@ -3,6 +3,7 @@ package io.github.kotlinmania.pulldowncmark
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -386,7 +387,7 @@ class PulldownCmarkTest {
         val input = "- `\nx\n**\n  *\n  `"
         val parser = Parser(input)
         for (ev in parser) {
-            // iterate without errors
+            assertNotNull(ev)
         }
     }
 
@@ -413,7 +414,7 @@ class PulldownCmarkTest {
         for (case in cases) {
             val parser = Parser(case, Options.ALL)
             for (ev in parser) {
-                // Ensure no crash or uncaught exception
+                assertNotNull(ev)
             }
         }
     }

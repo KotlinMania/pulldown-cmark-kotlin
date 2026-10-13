@@ -36,7 +36,7 @@ internal class FirstPass(
             ix = parseBlock(ix)
         }
         val spineLen = tree.spineLen()
-        for (i in 0 until spineLen) {
+        repeat(spineLen) {
             pop(ix)
         }
         return Pair(tree, allocs)
@@ -48,7 +48,7 @@ internal class FirstPass(
 
         val i = scanContainers(tree, lineStart, options.hasGfmFootnotes())
         val spineLen = tree.spineLen()
-        for (k in i until spineLen) {
+        repeat(maxOf(0, spineLen - i)) {
             pop(startIx)
         }
 
@@ -318,7 +318,7 @@ internal class FirstPass(
             return null
         }
 
-        for (c in cells until rowCells) {
+        repeat(maxOf(0, rowCells - cells)) {
             if (missingEmptyCells[0] >= maxAutocompletedCells) {
                 return null
             }
@@ -376,8 +376,9 @@ internal class FirstPass(
             )
         tree.push()
 
-        if (nextParagraphTask != null) {
-            tree.append(nextParagraphTask!!)
+        val task = nextParagraphTask
+        if (task != null) {
+            tree.append(task)
             nextParagraphTask = null
         }
 
@@ -769,8 +770,8 @@ internal class FirstPass(
                                                 else -> 1
                                             }
                                         val buf = StringBuilder()
-                                        for (k in 0 until ems) buf.append('—')
-                                        for (k in 0 until ens) buf.append('–')
+                                        repeat(ems) { buf.append('—') }
+                                        repeat(ens) { buf.append('–') }
                                         ItemBody.SynthesizeText(allocs.allocateCow(CowStr.from(buf.toString())))
                                     }
                                 }
@@ -1628,7 +1629,9 @@ internal fun scanParagraphInterruptNoTable(
 
     val listitem = scanListItem(text, offset)
     if (listitem != null) {
-        val (ix, delim, index, _) = listitem
+        val ix = listitem.first
+        val delim = listitem.second
+        val index = listitem.third
         val allowed =
             !currentContainer ||
                 tree.isInTable() ||
