@@ -1322,7 +1322,7 @@ private class InlineStack {
             if (c == '~' && runLength != el.runLength) {
                 continue
             }
-            if (el.c == c && (!both && !el.both || (runLength + el.runLength) % 3 != 0 || runLength % 3 == 0)) {
+            if (el.c == c && ((!both && !el.both) || (runLength + el.runLength) % 3 != 0 || runLength % 3 == 0)) {
                 matchingIx = i
                 matchingEl = el
                 break
