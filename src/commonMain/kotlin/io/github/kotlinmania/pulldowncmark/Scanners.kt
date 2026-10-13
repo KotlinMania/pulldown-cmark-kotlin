@@ -818,7 +818,7 @@ private fun scanUri(text: String, startIx: Int): Pair<Int, CowStr>? {
     return null
 }
 
-private fun scanEmail(text: String, startIx: Int): Pair<Int, CowStr>? {
+internal fun scanEmail(text: String, startIx: Int): Pair<Int, CowStr>? {
     var i = startIx
     while (i < text.length) {
         val c = text[i]
