@@ -15,19 +15,11 @@ let package = Package(
             dependencies: [
                 .product(name: "PulldownCmarkLibrary", package: "PulldownCmark")
             ],
-            swiftSettings: [
-                .unsafeFlags([
-                    "-F", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
-                ]),
-            ],
             linkerSettings: [
                 .unsafeFlags([
                     "-L", "../build/swift-test",
                     "-L", "../build/MergedLibraries/macos/Debug",
                     "-lPulldownCmark",
-                    "-F", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
-                    "-Xlinker", "-rpath", "-Xlinker", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
-                    "-Xlinker", "-rpath", "-Xlinker", "/Library/Developer/CommandLineTools/Library/Developer/usr/lib",
                 ]),
             ]
         ),
